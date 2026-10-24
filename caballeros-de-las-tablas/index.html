@@ -1,0 +1,1206 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Caballeros de las Tablas</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Nunito:wght@600;800;900&display=swap">
+<style>
+/* Layout: una sola columna centrada sobre un cielo estrellado; cada minijuego es una "pantalla" que sustituye a la anterior. Estética única y oscura (noche del Santuario), elegida a propósito. */
+:root {
+  color-scheme: dark;
+  --night: #0a0f2c;
+  --panel: #151b47;
+  --panel-2: #1d2560;
+  --line: #2e3884;
+  --ink: #eef1ff;
+  --muted: #aab2dc;
+  --gold: #f4c652;
+  --gold-deep: #c28a24;
+  --cosmo: #7fd8ff;
+  --fire: #ff8a4c;
+  --ok: #6fe3a6;
+  --bad: #ff6f86;
+  --font-display: "Cinzel", "Trajan Pro", "Palatino Linotype", Georgia, serif;
+  --font-body: "Nunito", "Segoe UI", "Trebuchet MS", system-ui, sans-serif;
+  --r: 14px;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { min-height: 100%; }
+body {
+  background: var(--night);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.45;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 40px;
+  overflow-x: hidden;
+}
+#sky { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+#app { position: relative; z-index: 1; max-width: 980px; margin: 0 auto; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid var(--cosmo); outline-offset: 2px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; letter-spacing: .02em; }
+
+/* Cabecera */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-block: 14px; }
+.brand { background: none; border: 0; padding: 0; display: flex; align-items: center; gap: 10px; text-align: left; }
+.brand-mark { width: 40px; height: 40px; flex: none; }
+.brand b { font-family: var(--font-display); font-weight: 800; font-size: 1.15rem; color: var(--gold); display: block; line-height: 1.1; }
+.brand small { color: var(--muted); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; }
+.status { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.chip { display: inline-flex; align-items: center; gap: 6px; background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; font-weight: 800; font-size: .9rem; }
+.chip.cosmo { color: var(--cosmo); font-variant-numeric: tabular-nums; }
+.chip.cosmo.bump { animation: bump .5s ease; }
+@keyframes bump { 40% { transform: scale(1.18); box-shadow: 0 0 18px var(--cosmo); } }
+.icon-btn { background: var(--panel); border: 1px solid var(--line); border-radius: 999px; width: 38px; height: 38px; display: grid; place-items: center; font-size: 1rem; }
+
+/* Comunes */
+.screen { display: grid; gap: 20px; animation: rise .35s ease both; }
+@keyframes rise { from { opacity: .4; transform: translateY(8px); } }
+.panel { background: color-mix(in srgb, var(--panel) 92%, transparent); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; }
+.back { justify-self: start; background: none; border: 0; color: var(--muted); font-weight: 800; padding: 4px 0; }
+.back:hover { color: var(--ink); }
+.eyebrow { font-size: .75rem; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); font-weight: 900; }
+.lead { color: var(--muted); max-width: 62ch; margin: 6px 0 0; }
+.btn { border: 0; border-radius: 12px; padding: 12px 20px; font-weight: 900; font-size: 1rem; background: var(--panel-2); border: 1px solid var(--line); }
+.btn:hover { border-color: var(--cosmo); }
+.btn.gold { background: linear-gradient(180deg, var(--gold), var(--gold-deep)); color: #2a1a00; border-color: transparent; }
+.btn.gold:hover { filter: brightness(1.08); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+/* Portada */
+.hero { display: grid; grid-template-columns: 1fr auto; gap: 18px; align-items: center; }
+.hero h1 { font-size: clamp(1.7rem, 4.5vw, 2.6rem); line-height: 1.1; }
+.hero h1 span { color: var(--gold); }
+.rankbox { min-width: 0; }
+.rank-name { font-family: var(--font-display); font-weight: 800; color: var(--gold); font-size: 1.1rem; }
+.bar { height: 12px; border-radius: 999px; background: var(--night); border: 1px solid var(--line); overflow: hidden; margin-top: 8px; }
+.bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--cosmo), #c8f1ff); border-radius: inherit; transition: width .5s ease; }
+.bar.hp i { background: linear-gradient(90deg, var(--fire), var(--gold)); }
+.bar-label { font-size: .85rem; color: var(--muted); margin-top: 6px; font-variant-numeric: tabular-nums; }
+.armor-badge { width: 110px; height: 110px; }
+.modes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.mode { text-align: left; display: grid; grid-template-columns: 84px 1fr; gap: 14px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; transition: transform .15s ease, border-color .15s ease; }
+.mode:hover { transform: translateY(-3px); border-color: var(--gold); }
+.mode h3 { font-size: 1.15rem; color: var(--ink); }
+.mode p { margin: 4px 0 0; color: var(--muted); font-size: .92rem; }
+.mode .art { width: 84px; height: 84px; }
+.glyph-art { display: grid; place-items: center; width: 84px; height: 84px; border-radius: 50%; border: 2px solid var(--gold); color: var(--gold); font-size: 2.6rem; box-shadow: 0 0 22px color-mix(in srgb, var(--gold) 35%, transparent) inset; font-family: "Segoe UI Symbol", "Noto Sans Symbols", "DejaVu Sans", sans-serif; }
+.extras { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.extra { text-align: left; background: transparent; border: 1px dashed var(--line); border-radius: var(--r); padding: 14px 16px; font-weight: 800; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.extra:hover { border-color: var(--gold); }
+.extra span { color: var(--muted); font-weight: 600; font-size: .9rem; }
+
+/* Constelaciones */
+.const line { stroke: var(--line); stroke-width: 1.3; stroke-linecap: round; }
+.const circle { fill: var(--muted); }
+.const.lit line { stroke: color-mix(in srgb, var(--gold) 70%, transparent); }
+.const.lit circle { fill: var(--gold); filter: drop-shadow(0 0 3px var(--gold)); }
+.const.cosmo line { stroke: color-mix(in srgb, var(--cosmo) 70%, transparent); }
+.const.cosmo circle { fill: var(--cosmo); filter: drop-shadow(0 0 3px var(--cosmo)); }
+.const.dim circle { fill: #4a538f; }
+.const.dim line { stroke: #2a3270; }
+
+/* Personajes */
+.knight { display: block; width: 100%; height: auto; overflow: visible; }
+.silhouette { filter: grayscale(1) brightness(.22); }
+.athena-box { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 12px; align-items: center; max-width: 360px; }
+.athena-box .knight { filter: drop-shadow(0 0 14px color-mix(in srgb, var(--gold) 45%, transparent)); }
+.bubble { position: relative; margin: 0; background: var(--night); border: 1px solid var(--gold-deep); border-radius: 14px; padding: 10px 12px; font-size: .9rem; color: var(--ink); }
+.bubble b { display: block; color: var(--gold); font-family: var(--font-display); font-size: .85rem; margin-bottom: 2px; }
+.portrait { width: 84px; height: 84px; border-radius: 50%; border: 2px solid var(--gold); overflow: hidden; background: radial-gradient(circle at 50% 40%, var(--panel-2), var(--night)); display: block; }
+.portrait .knight { width: 120%; margin: 4% 0 0 -10%; }
+.modal-card .knight { width: 150px; margin: 0 auto; filter: drop-shadow(0 0 16px color-mix(in srgb, var(--gold) 50%, transparent)); }
+.modal-card .duo { display: flex; justify-content: center; align-items: end; }
+.modal-card .duo .knight { width: 120px; margin: 0; }
+.hint-head { display: flex; align-items: center; gap: 10px; font-weight: 800; color: var(--gold); }
+.hint-head .portrait { width: 48px; height: 48px; }
+
+/* Caballero del jugador */
+.chip .mini { width: 26px; height: 26px; border-radius: 50%; overflow: hidden; display: inline-block; margin: -4px 2px -4px -6px; background: var(--panel-2); }
+.chip .mini .knight { width: 140%; margin: 2px 0 0 -20%; }
+.me { display: flex; gap: 14px; align-items: center; }
+.me-face { width: 92px; height: 92px; flex: none; padding: 0; cursor: pointer; }
+.me-face:hover { box-shadow: 0 0 0 3px color-mix(in srgb, var(--cosmo) 40%, transparent); }
+.me-sub { margin: 4px 0 0; color: var(--muted); font-weight: 700; }
+.link { background: none; border: 0; padding: 0; color: var(--cosmo); text-decoration: underline; font-weight: 800; }
+.heroes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.hero-card { display: grid; justify-items: center; gap: 6px; text-align: center; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 18px 12px; transition: transform .15s ease, border-color .15s ease; }
+.hero-card:hover { transform: translateY(-3px); border-color: var(--cosmo); }
+.hero-card.chosen { border-color: var(--gold); box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 30%, transparent); }
+.hero-card .portrait { width: 120px; height: 120px; border-color: var(--cosmo); }
+.hero-card b { font-family: var(--font-display); font-size: 1.15rem; }
+.hero-card span:last-child { color: var(--muted); font-size: .9rem; }
+.you { display: flex; align-items: center; gap: 10px; font-weight: 800; color: var(--cosmo); font-size: .9rem; }
+.you .portrait { width: 52px; height: 52px; border-color: var(--cosmo); }
+
+/* Casas */
+.houses { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.house { position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r) var(--r) 6px 6px; padding: 16px 10px 12px; text-align: center; display: grid; gap: 4px; justify-items: center; }
+.house::before { content: ""; position: absolute; left: 10%; right: 10%; top: -1px; height: 4px; background: var(--gold-deep); border-radius: 0 0 4px 4px; }
+.house:not(:disabled):hover { border-color: var(--gold); transform: translateY(-2px); }
+.house:disabled { cursor: not-allowed; }
+.house .face { width: 78px; height: 78px; }
+.house .g { font-size: 1.1rem; color: var(--gold); line-height: 1; font-family: "Segoe UI Symbol", "Noto Sans Symbols", "DejaVu Sans", sans-serif; }
+.house:disabled .g { color: #4a538f; }
+.house .hn { font-family: var(--font-display); font-weight: 800; font-size: .95rem; }
+.house .ht { font-size: .82rem; color: var(--muted); }
+.house .num { position: absolute; top: 8px; left: 10px; font-size: .72rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.stars { color: var(--gold); letter-spacing: 2px; font-size: 1rem; }
+.stars .off { color: #3b437e; }
+.lock { font-size: .8rem; color: var(--muted); }
+.house.next { border-color: var(--cosmo); box-shadow: 0 0 0 3px color-mix(in srgb, var(--cosmo) 25%, transparent); }
+
+/* Batalla */
+.battle { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+.guardian { display: grid; grid-template-columns: 130px 1fr; gap: 14px; align-items: center; }
+.guardian-art { position: relative; width: 130px; height: 130px; }
+.guardian-art svg.const { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .45; }
+.guardian-art .portrait { position: absolute; inset: 6px; width: auto; height: auto; box-shadow: 0 0 24px color-mix(in srgb, var(--gold) 40%, transparent); }
+.guardian.hit .guardian-art { animation: shake .4s ease; }
+.say { color: var(--muted); font-style: italic; font-size: .92rem; margin-top: 4px; }
+.question { text-align: center; padding-block: 18px 6px; }
+.q-text { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.4rem, 8vw, 3.6rem); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.q-text .eq { color: var(--muted); }
+.answer-box { display: inline-block; min-width: 2.6ch; border-bottom: 4px solid var(--gold); color: var(--gold); }
+.answer-box.empty { color: transparent; }
+.answer-box.empty::after { content: "?"; color: #4a538f; }
+.shake { animation: shake .4s ease; }
+@keyframes shake { 20%, 60% { transform: translateX(-8px); } 40%, 80% { transform: translateX(8px); } }
+.shields { display: flex; gap: 4px; }
+.feedback { min-height: 1.5em; text-align: center; font-weight: 800; }
+.feedback.ok { color: var(--ok); }
+.feedback.bad { color: var(--bad); }
+.explain { background: color-mix(in srgb, var(--bad) 10%, var(--panel)); border: 1px solid color-mix(in srgb, var(--bad) 45%, var(--line)); border-radius: 12px; padding: 14px; display: grid; gap: 10px; }
+.explain b { color: var(--gold); }
+.keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 340px; margin: 0 auto; width: 100%; }
+.key { padding: 16px 0; border-radius: 12px; background: var(--panel-2); border: 1px solid var(--line); font-size: 1.5rem; font-weight: 900; font-variant-numeric: tabular-nums; }
+.key:hover { border-color: var(--cosmo); }
+.key:active { transform: scale(.96); }
+.key.ok { background: linear-gradient(180deg, var(--gold), var(--gold-deep)); color: #2a1a00; border-color: transparent; font-size: 1.15rem; }
+.key.alt { color: var(--muted); font-size: 1.2rem; }
+.hint-note { text-align: center; color: var(--muted); font-size: .85rem; }
+
+/* Pistas: cuadrícula de estrellas */
+.star-grid { display: grid; gap: 3px; justify-content: center; }
+.star-grid i { font-style: normal; color: var(--cosmo); font-size: 14px; line-height: 1; width: 16px; text-align: center; }
+.skip { font-variant-numeric: tabular-nums; color: var(--ink); text-align: center; }
+.skip span { color: var(--cosmo); font-weight: 900; }
+
+/* Opciones del Coliseo */
+.options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; max-width: 460px; margin: 0 auto; width: 100%; }
+.opt { padding: 18px 0; font-size: 1.8rem; font-weight: 900; border-radius: 14px; background: var(--panel-2); border: 2px solid var(--line); font-variant-numeric: tabular-nums; }
+.opt:hover:not(:disabled) { border-color: var(--cosmo); }
+.opt.right { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 20%, var(--panel-2)); }
+.opt.wrong { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 20%, var(--panel-2)); }
+.opt:disabled { cursor: default; }
+.picker { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+.pick { padding: 14px 0; border-radius: 12px; background: var(--panel-2); border: 1px solid var(--line); font-weight: 900; font-size: 1.1rem; }
+.pick small { display: block; font-size: .7rem; color: var(--muted); font-weight: 700; }
+.pick:hover:not(:disabled) { border-color: var(--gold); }
+.pick.wide { grid-column: span 5; }
+.pick:disabled { opacity: .4; cursor: not-allowed; }
+.toggle { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+.toggle button { background: transparent; border: 0; padding: 8px 14px; font-weight: 800; color: var(--muted); }
+.toggle button[aria-pressed="true"] { background: var(--panel-2); color: var(--gold); }
+.progress-dots { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
+.progress-dots i { width: 12px; height: 12px; border-radius: 50%; background: #2a3270; }
+.progress-dots i.ok { background: var(--ok); }
+.progress-dots i.bad { background: var(--bad); }
+.progress-dots i.now { background: var(--gold); box-shadow: 0 0 8px var(--gold); }
+
+/* Meteoros */
+.sky-area { position: relative; height: 440px; border-radius: var(--r); border: 1px solid var(--line); overflow: hidden; background: radial-gradient(ellipse at 50% 120%, color-mix(in srgb, var(--fire) 22%, transparent), transparent 55%), linear-gradient(180deg, #060a22, #111853); }
+.ground { position: absolute; left: 0; right: 0; bottom: 0; height: 34px; background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--gold-deep) 35%, transparent)); border-top: 1px dashed color-mix(in srgb, var(--gold) 40%, transparent); }
+.meteor { position: absolute; top: 0; left: 0; padding: 8px 14px; border-radius: 999px; background: radial-gradient(circle at 30% 30%, #fff3d6, var(--fire) 60%, #b4410f); color: #2a0f00; font-weight: 900; font-size: 1.15rem; white-space: nowrap; box-shadow: 0 0 16px var(--fire); font-variant-numeric: tabular-nums; will-change: transform; }
+.meteor::before { content: ""; position: absolute; left: 50%; bottom: 100%; width: 10px; height: 60px; transform: translateX(-50%); background: linear-gradient(0deg, color-mix(in srgb, var(--fire) 80%, transparent), transparent); border-radius: 6px; filter: blur(2px); }
+.meteor.boom { animation: boom .35s ease forwards; }
+@keyframes boom { to { transform: var(--pos) scale(1.8); opacity: 0; filter: brightness(2); } }
+.ground-msg { position: absolute; left: 50%; bottom: 44px; transform: translateX(-50%); background: color-mix(in srgb, var(--bad) 85%, #000); color: #fff; padding: 6px 12px; border-radius: 999px; font-weight: 900; white-space: nowrap; animation: fadeout 1.6s ease forwards; }
+@keyframes fadeout { 70% { opacity: 1; } to { opacity: 0; transform: translate(-50%, -14px); } }
+.hud { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-weight: 900; font-variant-numeric: tabular-nums; }
+.hud .lives { color: var(--bad); letter-spacing: 3px; }
+.meteor-layout { display: grid; grid-template-columns: minmax(0, 1fr) 270px; gap: 16px; align-items: stretch; }
+.meteor-input { display: grid; gap: 14px; align-content: center; }
+.meteor-input .key { padding: 11px 0; font-size: 1.3rem; }
+.big-entry { font-family: var(--font-display); font-weight: 800; font-size: 2.6rem; text-align: center; color: var(--gold); border-bottom: 4px solid var(--gold); min-height: 1.4em; font-variant-numeric: tabular-nums; }
+.start-overlay { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; background: color-mix(in srgb, var(--night) 70%, transparent); padding: 16px; }
+
+/* Memoria */
+.cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; max-width: 620px; margin: 0 auto; width: 100%; }
+.card { aspect-ratio: 4 / 3; max-width: 100%; border-radius: 12px; border: 1px solid var(--line); background: radial-gradient(circle at 50% 40%, var(--panel-2), var(--panel)); display: grid; place-items: center; font-weight: 900; font-size: clamp(1.1rem, 3.6vw, 1.7rem); font-variant-numeric: tabular-nums; position: relative; overflow: hidden; }
+.card .back-face { color: #3b437e; font-size: 1.8rem; }
+.card.up { background: var(--panel-2); border-color: var(--cosmo); }
+.card.res.up { color: var(--gold); }
+.card.done { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 14%, var(--panel)); cursor: default; }
+.card.miss { animation: shake .4s ease; border-color: var(--bad); }
+.pairs-stars { display: flex; justify-content: center; gap: 8px; font-size: 1.5rem; color: #3b437e; }
+.pairs-stars .on { color: var(--gold); text-shadow: 0 0 10px var(--gold); }
+
+/* Colección y mapa */
+.collection { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+.cloth { text-align: center; display: grid; gap: 4px; justify-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px 6px; }
+.cloth svg.const { width: 72px; height: 72px; }
+.cloth .portrait { width: 76px; height: 76px; }
+.cloth b { font-size: .82rem; font-family: var(--font-display); }
+.cloth span { font-size: .72rem; color: var(--muted); }
+.cloth.locked b { color: var(--muted); }
+.cloth.won { border-color: var(--gold-deep); }
+.ranks { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.rank { border: 1px solid var(--line); border-radius: 10px; padding: 10px; text-align: center; font-size: .85rem; color: var(--muted); }
+.rank b { display: block; font-family: var(--font-display); color: var(--ink); font-size: .9rem; }
+.rank.have { border-color: var(--gold); }
+.rank.have b { color: var(--gold); }
+.tablewrap { overflow-x: auto; }
+table.map { border-collapse: separate; border-spacing: 4px; margin: 0 auto; font-variant-numeric: tabular-nums; }
+table.map th { color: var(--gold); font-family: var(--font-display); font-size: .95rem; width: 40px; height: 34px; }
+table.map td { width: 44px; height: 38px; text-align: center; border-radius: 8px; font-weight: 800; font-size: .92rem; background: #1a2058; color: var(--muted); }
+table.map td.m-gold { background: color-mix(in srgb, var(--gold) 75%, var(--night)); color: #2a1a00; }
+table.map td.m-ok { background: color-mix(in srgb, var(--cosmo) 45%, var(--night)); color: var(--ink); }
+table.map td.m-bad { background: color-mix(in srgb, var(--bad) 60%, var(--night)); color: #fff; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; font-size: .85rem; color: var(--muted); }
+.legend i { display: inline-block; width: 14px; height: 14px; border-radius: 4px; vertical-align: -2px; margin-right: 4px; }
+.weak-list { display: flex; gap: 8px; flex-wrap: wrap; }
+.weak-list span { background: color-mix(in srgb, var(--bad) 18%, var(--panel)); border: 1px solid color-mix(in srgb, var(--bad) 45%, var(--line)); border-radius: 999px; padding: 4px 12px; font-weight: 800; font-variant-numeric: tabular-nums; }
+
+/* Modal y efectos */
+.modal { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 16px; background: color-mix(in srgb, #02040f 72%, transparent); }
+.modal-card { background: var(--panel); border: 1px solid var(--gold-deep); border-radius: 18px; padding: 24px; max-width: 440px; width: 100%; text-align: center; display: grid; gap: 14px; animation: rise .3s ease both; box-shadow: 0 0 60px color-mix(in srgb, var(--gold) 20%, transparent); }
+.modal-card h2 { color: var(--gold); font-size: 1.6rem; }
+.modal-card p { margin: 0; color: var(--muted); }
+.modal-card .row { justify-content: center; }
+.modal-card svg.const { width: 140px; height: 140px; margin: 0 auto; }
+.big-stars { font-size: 2.4rem; color: var(--gold); letter-spacing: 6px; }
+.big-stars .off { color: #3b437e; }
+.name-input { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--night); color: var(--ink); font: inherit; font-size: 1.2rem; text-align: center; }
+.toast { position: fixed; left: 50%; top: calc(14px + env(safe-area-inset-top, 0px)); transform: translateX(-50%); z-index: 30; background: var(--gold); color: #2a1a00; font-weight: 900; padding: 10px 18px; border-radius: 999px; box-shadow: 0 6px 30px rgba(0,0,0,.4); animation: fadeout 3s ease forwards; white-space: nowrap; max-width: calc(100% - 32px); overflow: hidden; text-overflow: ellipsis; }
+.spark { position: fixed; z-index: 25; pointer-events: none; color: var(--cosmo); font-size: 18px; animation: spark .8s ease-out forwards; }
+@keyframes spark { to { transform: translate(var(--dx), var(--dy)) scale(.3); opacity: 0; } }
+.plus { position: fixed; z-index: 25; pointer-events: none; color: var(--cosmo); font-weight: 900; font-size: 1.3rem; animation: plus 1s ease-out forwards; text-shadow: 0 0 10px var(--cosmo); }
+@keyframes plus { to { transform: translateY(-50px); opacity: 0; } }
+.foot { text-align: center; color: var(--muted); font-size: .8rem; padding-top: 18px; }
+.foot button { background: none; border: 0; color: var(--muted); text-decoration: underline; font-size: .8rem; }
+
+@media (max-width: 760px) {
+  .battle, .meteor-layout { grid-template-columns: 1fr; }
+  .meteor-input { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); align-items: center; }
+  .modes, .extras { grid-template-columns: 1fr; }
+  .houses { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .collection { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .ranks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hero { grid-template-columns: 1fr; }
+  .athena-box { grid-template-columns: 96px minmax(0, 1fr); }
+  .heroes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hero-card .portrait { width: 96px; height: 96px; }
+  .me-face { width: 72px; height: 72px; }
+  .guardian { grid-template-columns: 96px 1fr; }
+  .guardian-art { width: 96px; height: 96px; }
+  .sky-area { height: 330px; }
+}
+@media (max-width: 440px) {
+  .houses { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .picker { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+  .cards { gap: 8px; }
+  .mode { grid-template-columns: 64px 1fr; }
+  .mode .art, .mode .glyph-art { width: 64px; height: 64px; font-size: 2rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="sky" aria-hidden="true"></canvas>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="kg-gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff3b0"/><stop offset=".45" stop-color="#f4c652"/><stop offset="1" stop-color="#b07a1c"/></linearGradient><linearGradient id="kb-0" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#d8e0f0"/><stop offset="1" stop-color="#8a9ab8"/></linearGradient><linearGradient id="kb-1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c8f0d0"/><stop offset=".45" stop-color="#4fb06a"/><stop offset="1" stop-color="#1f6a3a"/></linearGradient><linearGradient id="kb-2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#d6ecff"/><stop offset="1" stop-color="#7aa0c8"/></linearGradient><linearGradient id="kb-3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe0f0"/><stop offset=".45" stop-color="#f0a0c8"/><stop offset="1" stop-color="#b04a80"/></linearGradient><linearGradient id="kb-4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffc890"/><stop offset=".45" stop-color="#c0503a"/><stop offset="1" stop-color="#4a1f2a"/></linearGradient><linearGradient id="kb-5" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4ecff"/><stop offset=".45" stop-color="#c8b4f0"/><stop offset="1" stop-color="#7a62b0"/></linearGradient></defs></svg>
+<div id="app">
+  <header class="top">
+    <button class="brand" id="brand" aria-label="Ir al inicio">
+      <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="none" stroke="#f4c652" stroke-width="2"/><path d="M20 6 L23 17 L34 20 L23 23 L20 34 L17 23 L6 20 L17 17 Z" fill="#f4c652"/></svg>
+      <span><b>Caballeros de las Tablas</b><small>El Santuario de multiplicar</small></span>
+    </button>
+    <div class="status">
+      <span class="chip" id="who"></span>
+      <span class="chip cosmo" id="cosmo" title="Puntos de cosmos"></span>
+      <button class="icon-btn" id="sound" aria-label="Sonido"></button>
+    </div>
+  </header>
+  <main id="view"></main>
+  <p class="foot">Tu progreso se guarda en este ordenador. <button id="reset">Borrar progreso</button></p>
+</div>
+<div class="modal" id="modal" hidden><div class="modal-card" id="modal-card" role="dialog" aria-modal="true"></div></div>
+
+<script>
+(() => {
+'use strict';
+
+/* ---------- Datos ---------- */
+const VS = '︎';
+const SIGNS = [
+  { name: 'Aries', glyph: '♈', sub: 'Tabla del 1', say: 'Toda gran aventura empieza con un primer paso.' },
+  { name: 'Tauro', glyph: '♉', sub: 'Tabla del 2', say: 'Mi defensa es fuerte como un toro. ¡Dobla tu cosmos!' },
+  { name: 'Géminis', glyph: '♊', sub: 'Tabla del 3', say: 'Somos dos... ¿o somos tres?' },
+  { name: 'Cáncer', glyph: '♋', sub: 'Tabla del 4', say: 'Mis pinzas solo temen a quien sabe la tabla del 4.' },
+  { name: 'Leo', glyph: '♌', sub: 'Tabla del 5', say: 'Mi rugido cuenta de cinco en cinco.' },
+  { name: 'Virgo', glyph: '♍', sub: 'Tabla del 6', say: 'Cierra los ojos y concentra tu cosmos.' },
+  { name: 'Libra', glyph: '♎', sub: 'Tabla del 7', say: 'Mi balanza pesa cada respuesta.' },
+  { name: 'Escorpio', glyph: '♏', sub: 'Tabla del 8', say: 'Mi aguijón es rápido. ¿Lo eres tú?' },
+  { name: 'Sagitario', glyph: '♐', sub: 'Tabla del 9', say: 'Mi flecha nunca falla. Que la tuya tampoco.' },
+  { name: 'Capricornio', glyph: '♑', sub: 'Tabla del 10', say: 'Mi espada corta... ¡y añade un cero!' },
+  { name: 'Acuario', glyph: '♒', sub: 'Repaso del 6 al 10', say: 'Mi hielo congela a quien duda.' },
+  { name: 'Piscis', glyph: '♓', sub: 'Gran repaso final', say: 'Soy el último guardián. Demuestra todo lo que sabes.' },
+];
+const ZODIAC = [
+  { p: [[10,45],[38,32],[62,36],[88,58]], l: [[0,1],[1,2],[2,3]] },
+  { p: [[50,62],[42,50],[33,38],[12,14],[58,50],[66,38],[88,18],[48,76]], l: [[7,0],[0,1],[1,2],[2,3],[0,4],[4,5],[5,6]] },
+  { p: [[22,14],[26,42],[24,70],[18,90],[52,10],[56,40],[62,70],[70,90],[36,52]], l: [[0,1],[1,2],[2,3],[4,5],[5,6],[6,7],[0,4],[1,8],[8,5]] },
+  { p: [[50,14],[50,46],[24,82],[78,76]], l: [[0,1],[1,2],[1,3]] },
+  { p: [[20,32],[24,16],[38,10],[46,22],[40,36],[46,52],[82,46],[88,66],[52,68]], l: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,5]] },
+  { p: [[12,30],[30,36],[46,46],[62,40],[84,30],[44,66],[34,88],[62,60],[78,82]], l: [[0,1],[1,2],[2,3],[3,4],[2,5],[5,6],[3,7],[7,8]] },
+  { p: [[50,14],[24,40],[76,40],[30,76],[70,72]], l: [[0,1],[0,2],[1,2],[1,3],[2,4]] },
+  { p: [[14,18],[22,30],[16,44],[36,40],[48,46],[55,58],[58,72],[68,84],[82,82],[88,70],[82,60]], l: [[0,1],[1,2],[1,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10]] },
+  { p: [[24,52],[40,40],[56,46],[62,62],[46,72],[30,66],[52,24],[76,40],[88,56]], l: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,0],[1,6],[6,2],[2,7],[7,8]] },
+  { p: [[14,24],[30,36],[44,70],[60,76],[86,44],[80,28],[50,40]], l: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,1]] },
+  { p: [[12,30],[32,36],[50,24],[66,40],[56,56],[72,70],[52,82],[30,76]], l: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7]] },
+  { p: [[10,20],[18,10],[28,20],[18,30],[38,46],[56,70],[70,86],[76,62],[82,42],[88,22]], l: [[0,1],[1,2],[2,3],[3,0],[2,4],[4,5],[5,6],[6,7],[7,8],[8,9]] },
+];
+const BRONZE = [
+  { name: 'Pegaso', p: [[28,32],[66,30],[68,66],[26,64],[88,14],[8,84],[6,52]], l: [[0,1],[1,2],[2,3],[3,0],[1,4],[3,5],[0,6]] },
+  { name: 'Dragón', p: [[12,20],[22,14],[28,26],[46,32],[62,24],[78,34],[74,54],[56,62],[42,76],[58,88]], l: [[0,1],[1,2],[2,0],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9]] },
+  { name: 'Cisne', p: [[50,10],[50,42],[50,90],[14,34],[86,46],[32,38],[68,44]], l: [[0,1],[1,2],[3,5],[5,1],[1,6],[6,4]] },
+  { name: 'Andrómeda', p: [[10,70],[30,58],[50,50],[72,40],[90,24],[48,30],[44,12],[70,62]], l: [[0,1],[1,2],[2,3],[3,4],[2,5],[5,6],[3,7]] },
+  { name: 'Fénix', p: [[50,16],[30,42],[70,42],[50,58],[18,84],[82,84],[50,40]], l: [[0,6],[6,1],[6,2],[1,3],[2,3],[3,4],[3,5]] },
+  { name: 'Unicornio', p: [[14,30],[30,24],[44,36],[60,32],[74,46],[66,66],[84,80],[48,60]], l: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[2,7],[7,5]] },
+];
+const RANKS = [
+  { n: 'Aprendiz', min: 0 },
+  { n: 'Bronce', min: 300 },
+  { n: 'Plata', min: 1200 },
+  { n: 'Oro', min: 3000 },
+  { n: 'Leyenda', min: 6000 },
+];
+
+
+/* ---------- Personajes (dibujos originales en SVG) ---------- */
+const GOLD = [
+  { hair: '#c99be0', style: 'long', eyes: '#7b4fb0', crest: 'ram' },
+  { hair: '#4a2e1f', style: 'short', eyes: '#6a4320', crest: 'bull' },
+  { hair: '#3d6fd1', style: 'long', eyes: '#2c4fa8', crest: 'twin' },
+  { hair: '#27406b', style: 'spiky', eyes: '#8a1f2b', crest: 'claw' },
+  { hair: '#9a5a22', style: 'spiky', eyes: '#3a7a2a', crest: 'mane' },
+  { hair: '#f1d26b', style: 'long', eyes: null, crest: 'lotus' },
+  { hair: '#22222e', style: 'long', eyes: '#3a7a4a', crest: 'scale' },
+  { hair: '#2b4fa0', style: 'wavy', eyes: '#3f7fc6', crest: 'tail' },
+  { hair: '#7a3b1c', style: 'short', eyes: '#3a6aa8', crest: 'wings' },
+  { hair: '#2f3b2f', style: 'short', eyes: '#4a4a4a', crest: 'goat' },
+  { hair: '#2a8a8a', style: 'long', eyes: '#1f6a8a', crest: 'wave' },
+  { hair: '#7fb6e8', style: 'wavy', eyes: '#3a5ab0', crest: 'fins', rose: true },
+];
+const SKIN = '#f6d3b3', SKIN_S = '#e2ad86', GOLD_D = '#8a5a10';
+const HAIR_BACK = {
+  long: 'M38,46 Q34,18 60,20 Q86,18 82,46 Q86,74 94,100 Q78,94 60,96 Q42,94 26,100 Q34,74 38,46Z',
+  wavy: 'M38,46 Q34,18 60,20 Q86,18 82,46 Q90,62 86,74 Q96,86 92,102 Q76,92 60,96 Q44,92 28,102 Q24,86 34,74 Q30,62 38,46Z',
+  short: 'M40,52 Q36,22 60,22 Q84,22 80,52 Q80,62 76,66 L44,66 Q40,62 40,52Z',
+  spiky: 'M40,58 L28,52 L37,45 L26,35 L41,32 L38,17 L51,25 L60,10 L69,25 L82,17 L79,32 L94,35 L83,45 L92,52 L80,58Z',
+};
+const mirror = s => `${s}<g transform="translate(120,0) scale(-1,1)">${s}</g>`;
+const gP = d => `<path d="${d}" fill="url(#kg-gold)" stroke="${GOLD_D}" stroke-width=".8" stroke-linejoin="round"/>`;
+const CRESTS = {
+  ram: mirror(`<path d="M45,39 Q30,32 29,45 Q29,56 39,54 Q44,52 42,47 Q40,43 36,46" fill="none" stroke="url(#kg-gold)" stroke-width="4.5" stroke-linecap="round"/>`),
+  bull: mirror(gP('M45,37 Q30,34 22,16 Q36,24 49,32Z')),
+  twin: mirror(gP('M53,33 L46,12 L57,30Z')) + gP('M58,32 L60,20 L62,32Z'),
+  claw: mirror(gP('M48,33 Q38,20 45,10 Q48,19 52,21 Q50,15 55,13 Q57,24 53,33Z')),
+  mane: gP('M40,41 L33,28 L43,32 L42,19 L51,28 L55,13 L60,26 L65,13 L69,28 L78,19 L77,32 L87,28 L80,41 Q60,30 40,41Z'),
+  lotus: gP('M60,35 Q51,24 60,9 Q69,24 60,35Z') + mirror(gP('M55,35 Q43,31 45,19 Q54,26 58,33Z')),
+  scale: gP('M58,34 L58,15 L62,15 L62,34Z') + gP('M44,17 L76,17 L76,21 L44,21Z') + mirror(gP('M42,21 L48,21 Q48,28 45,28 Q42,28 42,21Z')),
+  tail: `<path d="M79,42 Q98,26 86,11 Q74,3 65,13" fill="none" stroke="url(#kg-gold)" stroke-width="5" stroke-linecap="round"/>` + gP('M67,8 L58,16 L69,17Z'),
+  wings: mirror(gP('M44,40 Q25,30 15,12 Q28,21 33,19 Q27,29 39,33 Q31,39 44,44Z')),
+  goat: mirror(gP('M47,35 Q38,16 56,5 Q47,18 51,32Z')),
+  wave: mirror(gP('M45,38 Q33,26 39,14 Q42,26 51,32Z')) + gP('M60,22 Q56,29 60,33 Q64,29 60,22Z'),
+  fins: mirror(gP('M44,43 Q29,41 24,29 Q33,34 36,30 Q36,38 45,39Z')),
+  pwing: mirror(gP('M44,40 Q31,33 24,21 Q33,27 37,26 Q32,33 41,35 Q35,39 44,43Z')),
+  dragon: gP('M60,33 Q55,19 64,7 Q62,20 66,30Z') + mirror(gP('M45,38 Q35,32 33,22 Q40,30 48,33Z')),
+  swan: `<path d="M62,33 Q72,22 63,13 Q57,9 54,15" fill="none" stroke="url(#kg-gold)" stroke-width="4" stroke-linecap="round"/>` + gP('M55,13 L47,16 L55,18Z') + mirror(gP('M45,39 Q36,34 33,27 Q40,32 48,34Z')),
+  tiara: mirror(gP('M47,36 L44,23 L53,33Z')) + gP('M57,32 L60,19 L63,32Z'),
+  flame: gP('M60,34 Q47,24 54,9 Q57,20 60,13 Q62,21 67,6 Q75,24 60,34Z') + mirror(gP('M45,38 Q31,30 34,17 Q40,30 49,33Z')),
+  horn: gP('M57,33 L60,5 L63,33Z'),
+};
+function eyesSVG(color) {
+  if (!color) return `<path d="M48.5,52 Q53,54.5 57.5,52 M62.5,52 Q67,54.5 71.5,52" fill="none" stroke="#3a2a20" stroke-width="1.5" stroke-linecap="round"/>`;
+  const eye = x => `<ellipse cx="${x}" cy="51.5" rx="4.3" ry="5" fill="#fff"/><ellipse cx="${x}" cy="52.3" rx="3.1" ry="4" fill="${color}"/><circle cx="${x}" cy="52.8" r="1.6" fill="#111"/><circle cx="${x + 1.2}" cy="50.4" r="1.1" fill="#fff"/>`;
+  return eye(53) + eye(67) + `<path d="M48.6,48.4 Q53,45.6 57.6,48.2 M62.4,48.2 Q67,45.6 71.4,48.4" fill="none" stroke="#222" stroke-width="1.5" stroke-linecap="round"/>`;
+}
+const FACE = `<path d="M44,46 Q44,30 60,30 Q76,30 76,46 Q76,62 60,70 Q44,62 44,46Z" fill="${SKIN}"/><path d="M60,55 L59,59 L61.2,59" fill="none" stroke="${SKIN_S}" stroke-width="1"/>`;
+function figureSVG(k, label, glyph, cape, cls = '') {
+  const brows = k.eyes ? `<path d="M48,43.5 L57,45 M72,43.5 L63,45" stroke="#2a1d14" stroke-width="1.6" stroke-linecap="round"/>` : '';
+  return `<svg viewBox="0 0 120 130" class="knight ${cls}" role="img" aria-label="${label}">
+    ${cape ? '<path d="M30,82 Q8,100 5,130 L115,130 Q112,100 90,82Z" fill="#f2f0fb" stroke="#c9c6e8"/>' : ''}
+    <path d="${HAIR_BACK[k.style]}" fill="${k.hair}"/>
+    <rect x="54" y="64" width="12" height="18" fill="${SKIN_S}"/>
+    ${gP('M34,84 Q60,76 86,84 L84,113 Q60,124 36,113Z')}
+    <path d="M36,113 Q60,124 84,113 L87,130 L33,130Z" fill="#c8922a" stroke="${GOLD_D}" stroke-width=".8"/>
+    <path d="M48,90 L60,100 L72,90 M60,100 L60,118" fill="none" stroke="${GOLD_D}" stroke-width="1"/>
+    ${glyph ? `<text x="60" y="114" text-anchor="middle" font-size="11" fill="${GOLD_D}" font-family="Segoe UI Symbol, Noto Sans Symbols, DejaVu Sans, sans-serif">${glyph}</text>` : ''}
+    ${gP('M47,77 L60,86 L73,77 L73,82 L60,91 L47,82Z')}
+    ${mirror(gP('M16,98 Q13,79 34,77 Q48,79 47,91 Q33,88 16,98Z'))}
+    ${FACE}
+    <path d="M43,47 Q41,25 60,25 Q79,25 77,47 L72,38 L68,46 L63,35 L58,45 L53,36 L48,46Z" fill="${k.hair}"/>
+    ${eyesSVG(k.eyes)}${brows}
+    <path d="M57,63.5 Q60,65 63,63.5" fill="none" stroke="#a0524a" stroke-width="1.3" stroke-linecap="round"/>
+    ${CRESTS[k.crest]}
+    ${gP('M43,41 Q60,28 77,41 L77,45 Q60,34 43,45Z')}
+    ${mirror(gP('M43,43 L40,57 L46,52Z'))}
+    <circle cx="60" cy="35.5" r="2.7" fill="#e0384d" stroke="${GOLD_D}" stroke-width=".8"/>
+    ${k.rose ? `<path d="M88,96 L80,76" stroke="#2f8a4a" stroke-width="1.6"/><circle cx="80" cy="74" r="4.2" fill="#d6304a"/><path d="M78,73 Q80,71 82,74" fill="none" stroke="#8a1328" stroke-width="1"/>` : ''}
+    ${k.extra || ''}
+  </svg>`;
+}
+function knightSVG(i, cls = '') {
+  return figureSVG(GOLD[i], `Caballero de oro de ${SIGNS[i].name}`, SIGNS[i].glyph + '\uFE0E', true, cls);
+}
+const HEROES = [
+  { name: 'Pegaso', desc: 'Valiente. Nunca se rinde, aunque falle.', hair: '#6b3a1e', style: 'spiky', eyes: '#6a4320', crest: 'pwing', dark: '#56688e', mid: '#a9b6d3' },
+  { name: 'Dragón', desc: 'Fuerte y con el escudo más duro.', hair: '#15151f', style: 'long', eyes: '#2a6a3a', crest: 'dragon', dark: '#1f5a32', mid: '#3f9a5a' },
+  { name: 'Cisne', desc: 'Tranquilo y frío como el hielo.', hair: '#e6d27a', style: 'short', eyes: '#3a7ac0', crest: 'swan', dark: '#56789a', mid: '#bcd4ea' },
+  { name: 'Andrómeda', desc: 'Amable, protege con su cadena.', hair: '#4f9a5a', style: 'wavy', eyes: '#4a8a4a', crest: 'tiara', dark: '#9a3a6a', mid: '#e59ac0',
+    extra: [0, 1, 2, 3, 4, 5, 6].map(j => `<ellipse cx="${20 + j * 6}" cy="${101 + j * 4.2}" rx="2.8" ry="2" fill="none" stroke="#d8dce8" stroke-width="1.4"/>`).join('') },
+  { name: 'Fénix', desc: 'Siempre renace con más fuerza.', hair: '#1d2a4f', style: 'spiky', eyes: '#4a3a7a', crest: 'flame', dark: '#4a1f2a', mid: '#8a3a3a' },
+  { name: 'Unicornio', desc: 'Rápido y lleno de energía.', hair: '#8a5a3a', style: 'short', eyes: '#4a3a6a', crest: 'horn', dark: '#5a4a8a', mid: '#b8a8e0' },
+];
+function heroSVG(i, cls = '') {
+  const h = HEROES[i] || HEROES[0];
+  return figureSVG(h, `Caballero de ${h.name}`, '', false, cls)
+    .replaceAll('url(#kg-gold)', `url(#kb-${HEROES.indexOf(h)})`).replaceAll(GOLD_D, h.dark).replaceAll('#c8922a', h.mid);
+}
+function athenaSVG(cls = '') {
+  return `<svg viewBox="0 0 120 130" class="knight athena ${cls}" role="img" aria-label="Atenea">
+    <path d="M36,46 Q30,14 60,14 Q90,14 84,46 Q92,80 104,130 L16,130 Q28,80 36,46Z" fill="#8e5cc8"/>
+    <rect x="54" y="64" width="12" height="18" fill="${SKIN_S}"/>
+    <path d="M28,98 Q30,80 50,78 L70,78 Q90,80 92,98 L92,130 L28,130Z" fill="${SKIN}"/>
+    <path d="M38,88 Q60,80 82,88 L98,130 L22,130Z" fill="#fbf8ff" stroke="#d8d2ee"/>
+    <path d="M40,88 Q60,98 80,88" fill="none" stroke="url(#kg-gold)" stroke-width="3"/>
+    <path d="M34,114 Q60,120 86,114" fill="none" stroke="url(#kg-gold)" stroke-width="3"/>
+    <path d="M50,79 Q60,86 70,79" fill="none" stroke="url(#kg-gold)" stroke-width="2"/>
+    <circle cx="60" cy="85" r="2.2" fill="#e0384d"/>
+    ${FACE}
+    <path d="M43,48 Q40,22 62,23 Q80,24 77,46 Q70,32 56,32 Q50,38 43,48Z" fill="#8e5cc8"/>
+    ${eyesSVG('#6a4bb0')}
+    <path d="M49,44.5 Q53,43 57,44.5 M63,44.5 Q67,43 71,44.5" fill="none" stroke="#4a2a6a" stroke-width="1.2" stroke-linecap="round"/>
+    <path d="M56.5,63 Q60,66 63.5,63" fill="none" stroke="#c0505a" stroke-width="1.3" stroke-linecap="round"/>
+    <circle cx="51" cy="60" r="2.4" fill="#f3a8b0" opacity=".45"/><circle cx="69" cy="60" r="2.4" fill="#f3a8b0" opacity=".45"/>
+    <path d="M47,30 Q60,25 73,30" fill="none" stroke="url(#kg-gold)" stroke-width="2"/><circle cx="60" cy="27.5" r="2" fill="#5ac8ff"/>
+    <path d="M104,130 L104,28" stroke="#e2b040" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="104" cy="22" r="5" fill="url(#kg-gold)" stroke="${GOLD_D}" stroke-width=".8"/>
+    ${gP('M104,22 Q92,10 88,20 Q96,20 104,26Z')}${gP('M104,22 Q116,10 120,20 Q112,20 104,26Z')}
+    <ellipse cx="100" cy="98" rx="5" ry="4.5" fill="${SKIN}"/>
+  </svg>`;
+}
+const ATHENA_TIPS = [
+  'El orden no importa: 3 × 7 da lo mismo que 7 × 3.',
+  'En la tabla del 9, las cifras del resultado suman 9: 9 × 4 = 36, y 3 + 6 = 9.',
+  'Si te atascas, cuenta de tantos en tantos.',
+  'Por 10 solo tienes que añadir un cero.',
+  'Por 5, el resultado siempre acaba en 0 o en 5.',
+  'Cada error te enseña algo. ¡Sigue intentándolo!',
+  'Por 4 es el doble del doble: 4 × 6 → 12 → 24.',
+  'Las tablas pares siempre dan resultados pares.',
+];
+
+/* ---------- Guardado ---------- */
+const KEY = 'caballeros-tablas-v1';
+const DEF = () => ({ name: '', cosmo: 0, houses: Array(12).fill(0), bronze: 0, hero: null, facts: {}, sound: true, bestMeteor: 0 });
+let save = DEF();
+try { const raw = localStorage.getItem(KEY); if (raw) save = Object.assign(DEF(), JSON.parse(raw)); } catch (e) {}
+const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(save)); } catch (e) {} };
+
+const factKey = (a, b) => Math.min(a, b) + 'x' + Math.max(a, b);
+function rec(a, b, ok) {
+  const k = factKey(a, b);
+  const f = save.facts[k] || (save.facts[k] = { ok: 0, bad: 0 });
+  ok ? f.ok++ : f.bad++;
+  persist();
+}
+function mastery(a, b) {
+  const f = save.facts[factKey(a, b)];
+  if (!f || f.ok + f.bad === 0) return '';
+  const r = f.ok / (f.ok + f.bad);
+  if (f.ok >= 3 && r >= 0.85) return 'm-gold';
+  if (r >= 0.6) return 'm-ok';
+  return 'm-bad';
+}
+function weakFacts() {
+  return Object.entries(save.facts)
+    .filter(([, f]) => f.bad > 0 && f.ok < f.bad * 2 + 2)
+    .sort((x, y) => (y[1].bad * 2 - y[1].ok) - (x[1].bad * 2 - x[1].ok))
+    .slice(0, 12)
+    .map(([k]) => k.split('x').map(Number));
+}
+
+/* ---------- Utilidades ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const view = $('#view');
+const rnd = n => Math.floor(Math.random() * n);
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = rnd(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const range = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const starsHTML = (n, cls = 'stars') => `<span class="${cls}">${[0, 1, 2].map(i => i < n ? '★' : '<span class="off">★</span>').join('')}</span>`;
+
+function constSVG(c, mode = 'lit') {
+  return `<svg viewBox="0 0 100 100" class="const ${mode}" aria-hidden="true">${c.l.map(([a, b]) => `<line x1="${c.p[a][0]}" y1="${c.p[a][1]}" x2="${c.p[b][0]}" y2="${c.p[b][1]}"/>`).join('')}${c.p.map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${i === 0 ? 3.4 : 2.5}"/>`).join('')}</svg>`;
+}
+function rankOf(c) { let r = 0; RANKS.forEach((k, i) => { if (c >= k.min) r = i; }); return r; }
+
+/* Pool de operaciones: set = número (1-10), 'all' o 'weak' */
+function pool(set) {
+  if (typeof set === 'number') return range(1, 10).map(k => [set, k]);
+  if (set === 'weak') { const w = weakFacts(); if (w.length) return w; }
+  const out = [];
+  for (let a = 2; a <= 10; a++) for (let b = 2; b <= 10; b++) out.push([a, b]);
+  return out;
+}
+function pickFact(set) {
+  const p = pool(set);
+  const [a, b] = p[rnd(p.length)];
+  if (typeof set === 'number') return [a, b];
+  return Math.random() < 0.5 ? [a, b] : [b, a];
+}
+
+function explain(a, b) {
+  const r = a * b;
+  const trick = (x, y) => {
+    if (y === 1) return `Cualquier número por 1 da el mismo número: <b>${x} × 1 = ${x}</b>.`;
+    if (y === 10) return `Por 10 solo añades un cero: ${x} → <b>${x * 10}</b>.`;
+    if (y === 2) return `Por 2 es el doble: ${x} + ${x} = <b>${x * 2}</b>.`;
+    if (y === 3) return `Por 3 es sumar tres veces: ${x} + ${x} + ${x} = <b>${x * 3}</b>.`;
+    if (y === 4) return `Por 4 es el doble del doble: ${x} → ${x * 2} → <b>${x * 4}</b>.`;
+    if (y === 5 && x !== 5) return `Por 5 es la mitad de por 10: ${x} × 10 = ${x * 10}, y la mitad es <b>${x * 5}</b>.`;
+    if (y === 9) return `Por 9 es por 10 menos una vez: ${x} × 10 = ${x * 10}, menos ${x} = <b>${x * 9}</b>.`;
+    return null;
+  };
+  const t = trick(a, b) || trick(b, a);
+  if (t) return t;
+  const big = Math.max(a, b), small = Math.min(a, b);
+  if (small === 6 || big === 6) {
+    const x = small === 6 ? big : small;
+    return `Por 6 es por 5 y una vez más: ${x} × 5 = ${x * 5}, más ${x} = <b>${r}</b>.`;
+  }
+  if (small === 8 || big === 8) {
+    const x = small === 8 ? big : small;
+    return `Por 8 es doblar tres veces: ${x} → ${x * 2} → ${x * 4} → <b>${r}</b>.`;
+  }
+  return `Si ${big} × ${small - 1} = ${big * (small - 1)}, súmale otro ${big}: <b>${r}</b>.`;
+}
+function starGrid(a, b) {
+  const rows = Math.min(a, b), cols = Math.max(a, b);
+  let h = `<div class="star-grid" style="grid-template-columns: repeat(${cols}, 16px)">`;
+  for (let i = 0; i < rows * cols; i++) h += '<i>✦</i>';
+  return h + `</div><p class="skip">${rows} ${rows === 1 ? 'fila' : 'filas'} de ${cols} estrellas</p>`;
+}
+function skipCount(a, b) {
+  const step = Math.max(a, b), times = Math.min(a, b);
+  const seq = range(1, times - 1).map(k => `<span>${k * step}</span>`);
+  return `<p class="skip">Cuenta de ${step} en ${step}: ${seq.concat('¿?').join(', ')}</p>`;
+}
+
+/* ---------- Sonido ---------- */
+let actx = null;
+function tone(f, d, type = 'triangle', when = 0, vol = 0.12) {
+  if (!save.sound) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const t = actx.currentTime + when, o = actx.createOscillator(), g = actx.createGain();
+    o.type = type; o.frequency.value = f;
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.001, t + d);
+    o.connect(g).connect(actx.destination); o.start(t); o.stop(t + d + 0.02);
+  } catch (e) {}
+}
+const sfx = {
+  ok: () => { tone(660, .12); tone(880, .12, 'triangle', .07); tone(1320, .22, 'triangle', .14); },
+  bad: () => { tone(220, .25, 'sawtooth', 0, .06); tone(160, .3, 'sawtooth', .12, .06); },
+  win: () => [523, 659, 784, 1046, 1318].forEach((f, i) => tone(f, .3, 'triangle', i * .12, .1)),
+  flip: () => tone(1200, .05, 'sine', 0, .05),
+  boom: () => { tone(140, .25, 'square', 0, .05); tone(880, .1, 'triangle', .03, .08); },
+};
+
+/* ---------- Efectos ---------- */
+function burst(el, plus) {
+  const r = el.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    for (let i = 0; i < 12; i++) {
+      const s = document.createElement('span');
+      s.className = 'spark'; s.textContent = '✦';
+      const ang = (i / 12) * Math.PI * 2, dist = 50 + rnd(40);
+      s.style.left = cx + 'px'; s.style.top = cy + 'px';
+      s.style.setProperty('--dx', Math.cos(ang) * dist + 'px');
+      s.style.setProperty('--dy', Math.sin(ang) * dist + 'px');
+      document.body.appendChild(s); setTimeout(() => s.remove(), 900);
+    }
+  }
+  if (plus) {
+    const p = document.createElement('span');
+    p.className = 'plus'; p.textContent = '+' + plus;
+    p.style.left = (cx + 30) + 'px'; p.style.top = (cy - 20) + 'px';
+    document.body.appendChild(p); setTimeout(() => p.remove(), 1100);
+  }
+}
+function toast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast'; t.textContent = msg;
+  document.body.appendChild(t); setTimeout(() => t.remove(), 3100);
+}
+function addCosmo(n) {
+  const before = rankOf(save.cosmo);
+  save.cosmo += n; persist(); renderHeader();
+  const c = $('#cosmo'); c.classList.remove('bump'); void c.offsetWidth; c.classList.add('bump');
+  const after = rankOf(save.cosmo);
+  if (after > before) { toast(`¡Nueva armadura: ${RANKS[after].n}!`); sfx.win(); }
+}
+
+/* ---------- Modal ---------- */
+let modalKeys = null;
+function showModal(html, actions) {
+  const card = $('#modal-card');
+  card.innerHTML = html + `<div class="row">${actions.map((a, i) => `<button class="btn ${a.primary ? 'gold' : ''}" data-i="${i}">${a.label}</button>`).join('')}</div>`;
+  card.querySelectorAll('[data-i]').forEach(b => b.addEventListener('click', () => { closeModal(); actions[+b.dataset.i].fn && actions[+b.dataset.i].fn(); }));
+  $('#modal').hidden = false;
+  const prim = card.querySelector('.btn.gold') || card.querySelector('.btn');
+  prim && prim.focus();
+  modalKeys = e => { if (e.key === 'Enter' && prim && document.activeElement.tagName !== 'INPUT') { e.preventDefault(); prim.click(); } };
+}
+function closeModal() { $('#modal').hidden = true; modalKeys = null; }
+
+/* ---------- Navegación y teclado ---------- */
+let keyHandler = null, cleanup = null;
+document.addEventListener('keydown', e => {
+  if (!$('#modal').hidden) { modalKeys && modalKeys(e); return; }
+  if (!keyHandler) return;
+  if (/^[0-9]$/.test(e.key)) { keyHandler(e.key); e.preventDefault(); }
+  else if (e.key === 'Backspace') { keyHandler('del'); e.preventDefault(); }
+  else if (e.key === 'Enter') { keyHandler('ok'); e.preventDefault(); }
+});
+function go(fn, ...args) {
+  if (cleanup) { cleanup(); cleanup = null; }
+  keyHandler = null;
+  closeModal();
+  fn(...args);
+  window.scrollTo(0, 0);
+}
+function backBtn(label = '← Volver al Santuario', to = home) {
+  const b = document.createElement('button'); b.className = 'back'; b.textContent = label;
+  b.addEventListener('click', () => go(to)); return b;
+}
+function screen(html, backTo = home, backLabel) {
+  view.innerHTML = '';
+  const s = document.createElement('section'); s.className = 'screen';
+  s.appendChild(backBtn(backLabel, backTo));
+  s.insertAdjacentHTML('beforeend', html);
+  view.appendChild(s);
+  return s;
+}
+function keypadHTML() {
+  return `<div class="keypad">${[7, 8, 9, 4, 5, 6, 1, 2, 3].map(n => `<button class="key" data-k="${n}">${n}</button>`).join('')}<button class="key alt" data-k="del" aria-label="Borrar">⌫</button><button class="key" data-k="0">0</button><button class="key ok" data-k="ok">OK</button></div>`;
+}
+function bindKeypad(root, onKey) {
+  root.querySelectorAll('.key').forEach(b => b.addEventListener('click', () => onKey(b.dataset.k)));
+  keyHandler = onKey;
+}
+
+/* ---------- Cabecera ---------- */
+function renderHeader() {
+  const r = RANKS[rankOf(save.cosmo)];
+  $('#who').innerHTML = (save.hero != null ? `<span class="mini">${heroSVG(save.hero)}</span>` : '') + esc(save.name || 'Aspirante') + ' · ' + r.n;
+  $('#cosmo').textContent = '✦ ' + save.cosmo.toLocaleString('es-ES');
+  $('#sound').textContent = save.sound ? '🔊' : '🔇';
+  $('#sound').setAttribute('aria-label', save.sound ? 'Silenciar sonido' : 'Activar sonido');
+}
+$('#brand').addEventListener('click', () => go(home));
+$('#sound').addEventListener('click', () => { save.sound = !save.sound; persist(); renderHeader(); });
+$('#reset').addEventListener('click', () => {
+  showModal('<h2>¿Borrar todo?</h2><p>Se perderán el cosmos, las casas conquistadas y las armaduras.</p>', [
+    { label: 'Cancelar', primary: true },
+    { label: 'Sí, borrar', fn: () => { const s = save.sound; save = DEF(); save.sound = s; persist(); renderHeader(); go(home); } },
+  ]);
+});
+
+/* ---------- Portada ---------- */
+function home() {
+  const ri = rankOf(save.cosmo), r = RANKS[ri], next = RANKS[ri + 1];
+  const pct = next ? Math.round((save.cosmo - r.min) / (next.min - r.min) * 100) : 100;
+  const conquered = save.houses.filter(Boolean).length;
+  view.innerHTML = `<section class="screen">
+    <div class="panel hero">
+      <div class="rankbox">
+        <p class="eyebrow">Santuario de las Tablas</p>
+        <div class="me">${save.hero != null ? `<button class="portrait me-face" id="m-hero" title="Cambiar de caballero">${heroSVG(save.hero)}</button>` : ''}
+          <div><h1>¡Hola, <span>${esc(save.name || 'aspirante')}</span>!</h1>${save.hero != null ? `<p class="me-sub">Caballero de ${HEROES[save.hero].name} · <button class="link" id="m-hero2">Cambiar</button></p>` : ''}</div></div>
+        <p class="lead">Cada operación acertada enciende tu cosmos. Reúne cosmos para ganar armaduras y conquista las Doce Casas.</p>
+        <div style="margin-top:14px"><span class="rank-name">Armadura: ${r.n}</span>
+          <div class="bar"><i style="width:${pct}%"></i></div>
+          <div class="bar-label">${next ? `${save.cosmo} / ${next.min} de cosmos para ${next.n}` : '¡Has alcanzado el rango máximo!'}</div>
+        </div>
+      </div>
+      <div class="athena-box">${athenaSVG()}<p class="bubble"><b>Atenea dice:</b>${ATHENA_TIPS[rnd(ATHENA_TIPS.length)]}</p></div>
+    </div>
+    <div class="modes">
+      <button class="mode" id="m-houses"><span class="portrait art">${knightSVG(Math.min(conquered, 11))}</span><span><h3>Las Doce Casas</h3><p>Vence a cada guardián con su tabla. ${conquered}/12 conquistadas.</p></span></button>
+      <button class="mode" id="m-train">${constSVG(BRONZE[5], 'cosmo').replace('class="const', 'class="art const')}<span><h3>Entrenamiento</h3><p>Practica una tabla sin prisa, con pistas de estrellas.</p></span></button>
+      <button class="mode" id="m-meteor">${constSVG(BRONZE[0], 'lit').replace('class="const', 'class="art const')}<span><h3>Lluvia de meteoros</h3><p>Destruye los meteoros escribiendo el resultado. Récord: ${save.bestMeteor}.</p></span></button>
+      <button class="mode" id="m-memory">${constSVG(ZODIAC[2], 'cosmo').replace('class="const', 'class="art const')}<span><h3>Constelaciones gemelas</h3><p>Juego de memoria: une cada operación con su resultado.</p></span></button>
+    </div>
+    <div class="extras">
+      <button class="extra" id="m-coll">Mi colección de armaduras <span>${conquered + save.bronze}/18 →</span></button>
+      <button class="extra" id="m-map">Mapa de mis tablas <span>Qué sé y qué me cuesta →</span></button>
+    </div>
+  </section>`;
+  $('#m-houses').onclick = () => go(housesScreen);
+  $('#m-train').onclick = () => go(trainSetup);
+  $('#m-meteor').onclick = () => go(meteorSetup);
+  $('#m-memory').onclick = () => go(memorySetup);
+  $('#m-coll').onclick = () => go(collection);
+  $('#m-map').onclick = () => go(mapScreen);
+  if ($('#m-hero')) { $('#m-hero').onclick = () => go(chooseHero); $('#m-hero2').onclick = () => go(chooseHero); }
+  if (!save.name) askName();
+  else if (save.hero == null) go(chooseHero);
+}
+function chooseHero() {
+  const s = screen(`<div><p class="eyebrow">Tu caballero</p><h2>Elige tu caballero de bronce</h2>
+    <p class="lead">Te acompañará en todas las batallas. Puedes cambiarlo cuando quieras desde la portada.</p></div>
+    <div class="heroes">${HEROES.map((h, i) => `<button class="hero-card ${save.hero === i ? 'chosen' : ''}" data-i="${i}">
+      <span class="portrait">${heroSVG(i)}</span><b>${h.name}</b><span>${h.desc}</span></button>`).join('')}</div>`);
+  s.querySelectorAll('.hero-card').forEach(b => b.onclick = () => {
+    save.hero = +b.dataset.i; persist(); renderHeader(); sfx.win();
+    toast(`¡Eres el Caballero de ${HEROES[save.hero].name}!`);
+    go(home);
+  });
+}
+function askName() {
+  showModal(`${athenaSVG()}<h2>Bienvenida al Santuario</h2><p>Soy Atenea. ¿Cómo te llamas, futura leyenda?</p>
+    <form id="name-form"><input class="name-input" id="name-input" maxlength="20" autocomplete="off" placeholder="Tu nombre"></form>`,
+    [{ label: 'Entrar', primary: true, fn: () => {
+      const v = ($('#name-input') || {}).value;
+      save.name = (v || '').trim() || 'Aspirante'; persist(); renderHeader(); go(save.hero == null ? chooseHero : home);
+    } }]);
+  const inp = $('#name-input');
+  inp.focus();
+  $('#name-form').addEventListener('submit', e => { e.preventDefault(); $('#modal-card .btn.gold').click(); });
+}
+
+/* ---------- Las Doce Casas ---------- */
+function housesScreen() {
+  const nextIdx = save.houses.findIndex(s => !s);
+  const s = screen(`<div><p class="eyebrow">Modo aventura</p><h2>Las Doce Casas</h2>
+    <p class="lead">Cada casa guarda una tabla. Responde bien todas las preguntas del guardián para cruzarla. Sin errores ganas 3 estrellas.</p></div>
+    <div class="houses">${SIGNS.map((h, i) => {
+      const open = i === 0 || save.houses[i - 1] > 0;
+      return `<button class="house ${i === nextIdx && open ? 'next' : ''}" data-i="${i}" ${open ? '' : 'disabled'}>
+        <span class="num">${i + 1}</span>
+        <span class="portrait face">${knightSVG(i, open ? '' : 'silhouette')}</span>
+        <span class="hn"><span class="g">${h.glyph + VS}</span> ${h.name}</span>
+        <span class="ht">${h.sub}</span>
+        ${open ? starsHTML(save.houses[i]) : '<span class="lock">Cerrada</span>'}
+      </button>`;
+    }).join('')}</div>`);
+  s.querySelectorAll('.house:not(:disabled)').forEach(b => b.onclick = () => go(battle, +b.dataset.i));
+}
+function houseQuestions(i) {
+  if (i < 10) {
+    const t = i + 1;
+    return shuffle(range(1, 10)).map(k => Math.random() < 0.3 ? [k, t] : [t, k]);
+  }
+  if (i === 10) return range(1, 10).map(() => { const a = 6 + rnd(5), b = 2 + rnd(9); return Math.random() < .5 ? [a, b] : [b, a]; });
+  const weak = weakFacts();
+  return range(1, 12).map((_, j) => {
+    if (weak.length && j % 3 === 0) { const [a, b] = weak[rnd(weak.length)]; return [a, b]; }
+    return [3 + rnd(8), 3 + rnd(8)];
+  });
+}
+function battle(i) {
+  const h = SIGNS[i];
+  const st = { queue: houseQuestions(i), total: 0, done: 0, errors: 0, entry: '', locked: false };
+  st.total = st.queue.length;
+  const s = screen(`<div class="panel guardian" id="guardian">
+      <div class="guardian-art">${constSVG(ZODIAC[i], 'lit')}<span class="portrait">${knightSVG(i)}</span></div>
+      <div><p class="eyebrow">Casa ${i + 1} · ${h.sub}</p><h2>Caballero de Oro de ${h.name}</h2>
+        <p class="say">«${h.say}»</p>
+        <div class="bar hp"><i id="hp" style="width:100%"></i></div>
+        <div class="bar-label" id="hp-label"></div></div>
+    </div>
+    <div class="battle">
+      <div class="panel">
+        ${save.hero != null ? `<div class="you"><span class="portrait">${heroSVG(save.hero)}</span><span>Tu ataque, Caballero de ${HEROES[save.hero].name}:</span></div>` : ''}
+        <div class="question"><div class="q-text" id="q"></div></div>
+        <p class="feedback" id="fb" aria-live="polite"></p>
+        <div id="explain-slot"></div>
+      </div>
+      <div class="panel">${keypadHTML()}<p class="hint-note">También puedes usar el teclado y pulsar Enter.</p></div>
+    </div>`, housesScreen, '← Volver a las casas');
+  const qEl = $('#q', s), fb = $('#fb', s), slot = $('#explain-slot', s);
+  const cur = () => st.queue[0];
+  function drawQ() {
+    const [a, b] = cur();
+    qEl.innerHTML = `${a} × ${b} <span class="eq">=</span> <span class="answer-box ${st.entry ? '' : 'empty'}">${st.entry}</span>`;
+  }
+  function drawHP() {
+    $('#hp').style.width = ((st.total - st.done) / st.total * 100) + '%';
+    $('#hp-label').textContent = `Le quedan ${st.total - st.done} golpes · Errores: ${st.errors}`;
+  }
+  function onKey(k) {
+    if (st.locked) { if (k === 'ok' && st.wrong) cont(); return; }
+    if (k === 'del') st.entry = st.entry.slice(0, -1);
+    else if (k === 'ok') { if (st.entry) submit(); return; }
+    else if (st.entry.length < 3) st.entry += k;
+    drawQ();
+  }
+  function submit() {
+    const [a, b] = cur();
+    if (+st.entry === a * b) {
+      rec(a, b, true); sfx.ok();
+      st.done++; st.queue.shift();
+      fb.className = 'feedback ok'; fb.textContent = ['¡Golpe certero!', '¡Tu cosmos arde!', '¡Muy bien!', '¡Exacto!'][rnd(4)];
+      $('#guardian').classList.remove('hit'); void s.offsetWidth; $('#guardian').classList.add('hit');
+      burst(qEl, 10); addCosmo(10); drawHP();
+      st.entry = '';
+      if (!st.queue.length) return setTimeout(finish, 500);
+      st.locked = true;
+      setTimeout(() => { st.locked = false; fb.textContent = ''; drawQ(); }, 550);
+      drawQ();
+    } else {
+      rec(a, b, false); sfx.bad(); st.errors++;
+      qEl.classList.remove('shake'); void qEl.offsetWidth; qEl.classList.add('shake');
+      fb.className = 'feedback bad'; fb.textContent = '¡El guardián ha bloqueado tu ataque!';
+      st.locked = true; st.wrong = true;
+      slot.innerHTML = `<div class="explain"><div><b>${a} × ${b} = ${a * b}</b></div><div>${explain(a, b)}</div>
+        <button class="btn gold" id="cont">Entendido, ¡sigo!</button></div>`;
+      $('#cont').onclick = cont;
+      $('#cont').focus();
+      drawHP();
+    }
+  }
+  function cont() {
+    const q = st.queue.shift();
+    st.queue.splice(Math.min(3, st.queue.length), 0, q);
+    st.entry = ''; st.locked = false; st.wrong = false; slot.innerHTML = ''; fb.textContent = '';
+    drawQ();
+  }
+  function finish() {
+    keyHandler = null;
+    const stars = st.errors === 0 ? 3 : st.errors <= 2 ? 2 : 1;
+    const first = !save.houses[i];
+    save.houses[i] = Math.max(save.houses[i], stars); persist();
+    const bonus = 30 * stars; addCosmo(bonus); sfx.win();
+    const finale = i === 11;
+    showModal(`<p class="eyebrow">Casa de ${h.name} conquistada</p>
+      ${finale ? `<div class="duo">${knightSVG(i)}${athenaSVG()}</div>` : knightSVG(i)}
+      <h2>${finale ? '¡Has llegado hasta Atenea!' : first ? '¡Armadura de Oro de ' + h.name + '!' : '¡Casa superada!'}</h2>
+      ${finale ? '<p>Has cruzado las Doce Casas. Atenea te da las gracias: el Santuario está a salvo gracias a ti.</p>' : ''}
+      <div class="big-stars">${[0, 1, 2].map(k => k < stars ? '★' : '<span class="off">★</span>').join('')}</div>
+      <p>${st.errors === 0 ? 'Sin ningún error. ¡Perfecto!' : `Con ${st.errors} ${st.errors === 1 ? 'error' : 'errores'}. ${stars < 3 ? 'Repítela sin errores para lograr 3 estrellas.' : ''}`} Bonus: +${bonus} de cosmos.</p>`,
+      [{ label: 'Repetir', fn: () => go(battle, i) },
+       i < 11 ? { label: 'Siguiente casa →', primary: true, fn: () => go(battle, i + 1) } : { label: 'Ver mi colección', primary: true, fn: () => go(collection) }]);
+  }
+  bindKeypad(s, onKey);
+  drawQ(); drawHP();
+}
+
+/* ---------- Selector de tabla ---------- */
+function pickerHTML() {
+  const w = weakFacts().length;
+  return `<div class="picker">${range(1, 10).map(n => `<button class="pick" data-set="${n}"><small>Tabla del</small>${n}</button>`).join('')}
+    <button class="pick wide" data-set="all">Todas mezcladas</button>
+    <button class="pick wide" data-set="weak" ${w ? '' : 'disabled'}>Las que más me cuestan${w ? ` (${w})` : ' · aún no hay'}</button></div>`;
+}
+function bindPicker(s, fn) {
+  s.querySelectorAll('.pick:not(:disabled)').forEach(b => b.onclick = () => {
+    const v = b.dataset.set; fn(isNaN(+v) ? v : +v);
+  });
+}
+const setLabel = set => typeof set === 'number' ? `Tabla del ${set}` : set === 'weak' ? 'Las que más me cuestan' : 'Todas mezcladas';
+
+/* ---------- Entrenamiento ---------- */
+let trainOrdered = true;
+function trainSetup() {
+  const s = screen(`<div><p class="eyebrow">Entrenamiento</p><h2>¿Qué tabla entrenamos?</h2>
+    <p class="lead">Diez preguntas con cuatro respuestas para elegir. Si te atascas, pide una pista y verás la operación con estrellas.</p></div>
+    <div class="row"><span>Orden de las preguntas:</span><span class="toggle"><button id="ord1" aria-pressed="${trainOrdered}">En orden</button><button id="ord2" aria-pressed="${!trainOrdered}">Salteadas</button></span></div>
+    <div class="panel">${pickerHTML()}</div>`);
+  $('#ord1').onclick = () => { trainOrdered = true; go(trainSetup); };
+  $('#ord2').onclick = () => { trainOrdered = false; go(trainSetup); };
+  bindPicker(s, set => go(train, set));
+}
+function options(a, b) {
+  const r = a * b, set = new Set([r]);
+  const cands = shuffle([a * (b + 1), a * (b - 1), (a + 1) * b, (a - 1) * b, r + 1, r - 1, r + 2, r + 10, r - 10]);
+  for (const c of cands) { if (set.size >= 4) break; if (c > 0 && c !== r) set.add(c); }
+  let x = r + 3; while (set.size < 4) set.add(x++);
+  return shuffle([...set]);
+}
+function train(set) {
+  let qs;
+  if (typeof set === 'number') { const ks = trainOrdered ? range(1, 10) : shuffle(range(1, 10)); qs = ks.map(k => [set, k]); }
+  else qs = range(1, 10).map(() => pickFact(set));
+  const st = { n: 0, res: [], hint: false };
+  const s = screen(`<div><p class="eyebrow">Entrenamiento · ${setLabel(set)}</p></div>
+    <div class="progress-dots" id="dots"></div>
+    <div class="panel"><div class="question"><div class="q-text" id="q"></div></div>
+      <p class="feedback" id="fb" aria-live="polite"></p>
+      <div class="options" id="opts"></div>
+      <div id="hint-slot" style="margin-top:14px; display:grid; gap:10px"></div>
+      <div class="row" style="justify-content:center; margin-top:12px"><button class="btn" id="hint">💡 Pista</button><button class="btn gold" id="next" hidden>Siguiente →</button></div>
+    </div>`, trainSetup, '← Elegir otra tabla');
+  const qEl = $('#q', s), fb = $('#fb', s), opts = $('#opts', s), hs = $('#hint-slot', s);
+  function dots() { $('#dots').innerHTML = qs.map((_, i) => `<i class="${st.res[i] === true ? 'ok' : st.res[i] === false ? 'bad' : i === st.n ? 'now' : ''}"></i>`).join(''); }
+  function draw() {
+    const [a, b] = qs[st.n];
+    st.hint = false; hs.innerHTML = ''; fb.textContent = '';
+    $('#hint').hidden = false; $('#next').hidden = true;
+    qEl.innerHTML = `${a} × ${b} <span class="eq">=</span> <span class="answer-box empty"></span>`;
+    opts.innerHTML = options(a, b).map(v => `<button class="opt" data-v="${v}">${v}</button>`).join('');
+    opts.querySelectorAll('.opt').forEach(o => o.onclick = () => choose(o));
+    dots();
+  }
+  function choose(o) {
+    const [a, b] = qs[st.n], ok = +o.dataset.v === a * b;
+    opts.querySelectorAll('.opt').forEach(x => { x.disabled = true; if (+x.dataset.v === a * b) x.classList.add('right'); });
+    qEl.innerHTML = `${a} × ${b} <span class="eq">=</span> <span class="answer-box">${a * b}</span>`;
+    rec(a, b, ok); st.res[st.n] = ok;
+    if (ok) { sfx.ok(); const pts = st.hint ? 2 : 5; burst(o, pts); addCosmo(pts); fb.className = 'feedback ok'; fb.textContent = '¡Correcto!'; }
+    else { sfx.bad(); o.classList.add('wrong'); fb.className = 'feedback bad'; fb.textContent = 'Casi. Mira el truco:'; hs.innerHTML = `<div class="explain"><div>${explain(a, b)}</div></div>`; }
+    $('#hint').hidden = true; $('#next').hidden = false; $('#next').focus();
+    dots();
+  }
+  $('#hint').onclick = () => {
+    const [a, b] = qs[st.n]; st.hint = true;
+    hs.innerHTML = `<div class="hint-head"><span class="portrait">${athenaSVG()}</span>Atenea te da una pista:</div>` + starGrid(a, b) + skipCount(a, b);
+    $('#hint').hidden = true;
+  };
+  $('#next').onclick = () => {
+    st.n++;
+    if (st.n < qs.length) return draw();
+    const good = st.res.filter(Boolean).length;
+    if (good === qs.length) addCosmo(20);
+    sfx.win();
+    showModal(`<p class="eyebrow">Entrenamiento terminado</p><h2>${good} de ${qs.length}</h2>
+      <p>${good === qs.length ? '¡Todas bien! Bonus de +20 de cosmos.' : good >= 7 ? '¡Muy buen entrenamiento! Un poco más y la dominas.' : 'Cada entrenamiento te hace más fuerte. ¡Otra vez!'}</p>`,
+      [{ label: 'Otra tabla', fn: () => go(trainSetup) }, { label: 'Repetir', primary: true, fn: () => go(train, set) }]);
+  };
+  keyHandler = k => { const btns = opts.querySelectorAll('.opt'); if (k === 'ok' && !$('#next').hidden) $('#next').click(); else if (+k >= 1 && +k <= 4 && btns[+k - 1] && !btns[0].disabled) btns[+k - 1].click(); };
+  draw();
+}
+
+/* ---------- Lluvia de meteoros ---------- */
+function meteorSetup() {
+  const s = screen(`<div><p class="eyebrow">Lluvia de meteoros</p><h2>Defiende el Santuario</h2>
+    <p class="lead">Caen meteoros con operaciones. Escribe el resultado y pulsa Enter para destruirlos antes de que toquen el suelo. Tienes 3 vidas, y cada vez caen más rápido.</p></div>
+    <div class="panel">${pickerHTML()}</div>`);
+  bindPicker(s, set => go(meteorGame, set));
+}
+function meteorGame(set) {
+  const s = screen(`<div class="hud"><span>${setLabel(set)}</span><span>Puntos: <b id="score">0</b> · Racha: <b id="combo">0</b></span><span class="lives" id="lives">♥♥♥</span></div>
+    <div class="meteor-layout"><div class="sky-area" id="area"><div class="ground"></div>
+      <div class="start-overlay" id="ov"><div style="display:grid;gap:12px;justify-items:center"><h2>¿Preparada?</h2><p class="lead">Escribe el resultado y pulsa Enter.</p><button class="btn gold" id="go">¡Empezar!</button></div></div></div>
+    <div class="panel meteor-input"><div class="big-entry" id="entry"></div><div>${keypadHTML()}</div></div></div>`, meteorSetup, '← Elegir otra tabla');
+  const area = $('#area', s), entryEl = $('#entry', s);
+  const st = { m: [], entry: '', lives: 3, score: 0, combo: 0, killed: 0, last: 0, prev: 0, running: false, raf: 0, spawnAt: 0 };
+  const H = () => area.clientHeight, W = () => area.clientWidth;
+  function hud() { $('#score').textContent = st.score; $('#combo').textContent = st.combo; $('#lives').textContent = '♥'.repeat(st.lives) + '♡'.repeat(3 - st.lives); entryEl.textContent = st.entry; }
+  function spawn() {
+    const [a, b] = pickFact(set);
+    const el = document.createElement('div'); el.className = 'meteor'; el.textContent = `${a} × ${b}`;
+    area.appendChild(el);
+    const x = 8 + Math.random() * Math.max(10, W() - el.offsetWidth - 16);
+    const fall = Math.max(5, 12 - st.killed * 0.18);
+    st.m.push({ a, b, el, x, y: -40, v: (H() + 40) / fall });
+  }
+  function loop(ts) {
+    if (!st.running) return;
+    const dt = Math.min(0.05, (ts - (st.prev || ts)) / 1000); st.prev = ts;
+    st.spawnAt -= dt;
+    if (st.spawnAt <= 0 && st.m.length < 5) { spawn(); st.spawnAt = Math.max(1.4, 3.2 - st.killed * 0.06); }
+    const floor = H() - 34 - 36;
+    for (const m of st.m.slice()) {
+      m.y += m.v * dt;
+      const pos = `translate(${m.x}px, ${m.y}px)`;
+      m.el.style.transform = pos; m.el.style.setProperty('--pos', pos);
+      if (m.y >= floor) {
+        st.m.splice(st.m.indexOf(m), 1); m.el.remove();
+        rec(m.a, m.b, false); sfx.bad();
+        st.lives--; st.combo = 0;
+        const msg = document.createElement('div'); msg.className = 'ground-msg'; msg.textContent = `${m.a} × ${m.b} = ${m.a * m.b}`;
+        area.appendChild(msg); setTimeout(() => msg.remove(), 1700);
+        hud();
+        if (st.lives <= 0) return end();
+      }
+    }
+    st.raf = requestAnimationFrame(loop);
+  }
+  function start() {
+    $('#ov').hidden = true; st.running = true; st.spawnAt = 0.3; st.prev = 0;
+    st.raf = requestAnimationFrame(loop);
+  }
+  function submit() {
+    const v = +st.entry; st.entry = '';
+    const hits = st.m.filter(m => m.a * m.b === v).sort((p, q) => q.y - p.y);
+    if (hits.length) {
+      const m = hits[0];
+      st.m.splice(st.m.indexOf(m), 1);
+      m.el.classList.add('boom'); setTimeout(() => m.el.remove(), 360);
+      rec(m.a, m.b, true); sfx.boom();
+      st.combo++; st.killed++;
+      const pts = 10 + Math.min(st.combo - 1, 5) * 2; st.score += pts;
+      burst(m.el, pts);
+    } else {
+      st.combo = 0; sfx.bad();
+      entryEl.classList.remove('shake'); void entryEl.offsetWidth; entryEl.classList.add('shake');
+    }
+    hud();
+  }
+  function end() {
+    st.running = false; cancelAnimationFrame(st.raf); keyHandler = null;
+    const best = st.score > save.bestMeteor;
+    if (best) { save.bestMeteor = st.score; persist(); }
+    if (st.score) addCosmo(st.score);
+    sfx.win();
+    showModal(`<p class="eyebrow">Fin de la lluvia</p><h2>${st.score} puntos</h2>
+      <p>Has destruido ${st.killed} ${st.killed === 1 ? 'meteoro' : 'meteoros'}. ${best ? '¡Nuevo récord!' : `Tu récord es ${save.bestMeteor}.`} Ganas +${st.score} de cosmos.</p>`,
+      [{ label: 'Salir', fn: () => go(home) }, { label: 'Jugar otra vez', primary: true, fn: () => go(meteorGame, set) }]);
+  }
+  bindKeypad(s, k => {
+    if (!st.running) { if (k === 'ok' && !$('#ov').hidden) start(); return; }
+    if (k === 'del') st.entry = st.entry.slice(0, -1);
+    else if (k === 'ok') { if (st.entry) submit(); return; }
+    else if (st.entry.length < 3) st.entry += k;
+    hud();
+  });
+  $('#go').onclick = start;
+  const onVis = () => { if (document.hidden) st.prev = 0; };
+  document.addEventListener('visibilitychange', onVis);
+  cleanup = () => { st.running = false; cancelAnimationFrame(st.raf); document.removeEventListener('visibilitychange', onVis); };
+  hud();
+}
+
+/* ---------- Constelaciones gemelas (memoria) ---------- */
+function memorySetup() {
+  const s = screen(`<div><p class="eyebrow">Constelaciones gemelas</p><h2>Encuentra las parejas</h2>
+    <p class="lead">Da la vuelta a dos cartas. Si una operación y su resultado coinciden, se quedan boca arriba. Completa el tablero para ganar una armadura de bronce.</p></div>
+    <div class="panel">${pickerHTML()}</div>`);
+  bindPicker(s, set => go(memoryGame, set));
+}
+function memoryFacts(set) {
+  const out = [], used = new Set();
+  const p = shuffle(pool(set).map(([a, b]) => Math.random() < .5 || typeof set === 'number' ? [a, b] : [b, a]));
+  for (const [a, b] of p) { if (out.length >= 6) break; if (!used.has(a * b)) { used.add(a * b); out.push([a, b]); } }
+  while (out.length < 6) { const a = 2 + rnd(9), b = 2 + rnd(9); if (!used.has(a * b)) { used.add(a * b); out.push([a, b]); } }
+  return out;
+}
+function memoryGame(set) {
+  const facts = memoryFacts(set);
+  const cards = shuffle(facts.flatMap(([a, b], id) => [{ id, kind: 'op', text: `${a} × ${b}` }, { id, kind: 'res', text: String(a * b) }]));
+  const st = { open: [], matched: 0, moves: 0, lock: false };
+  const s = screen(`<div class="hud"><span>${setLabel(set)}</span><span>Intentos: <b id="moves">0</b></span></div>
+    <div class="pairs-stars" id="ps">${facts.map(() => '<span>✦</span>').join('')}</div>
+    <div class="cards">${cards.map((c, i) => `<button class="card ${c.kind}" data-i="${i}" aria-label="Carta ${i + 1}"><span class="back-face">✧</span></button>`).join('')}</div>`, memorySetup, '← Elegir otra tabla');
+  const btns = [...s.querySelectorAll('.card')];
+  btns.forEach(b => b.onclick = () => flip(+b.dataset.i));
+  function face(i, up) { const c = cards[i], b = btns[i]; b.classList.toggle('up', up); b.innerHTML = up ? c.text : '<span class="back-face">✧</span>'; }
+  function flip(i) {
+    if (st.lock || cards[i].done || st.open.includes(i)) return;
+    sfx.flip(); face(i, true); st.open.push(i);
+    if (st.open.length < 2) return;
+    st.moves++; $('#moves').textContent = st.moves;
+    const [x, y] = st.open, cx = cards[x], cy = cards[y];
+    if (cx.id === cy.id && cx.kind !== cy.kind) {
+      cx.done = cy.done = true; st.open = [];
+      btns[x].classList.add('done'); btns[y].classList.add('done');
+      const [a, b] = facts[cx.id]; rec(a, b, true);
+      st.matched++; $('#ps').children[st.matched - 1].className = 'on';
+      sfx.ok(); burst(btns[y], 15); addCosmo(15);
+      if (st.matched === facts.length) setTimeout(finish, 500);
+    } else {
+      st.lock = true;
+      btns[x].classList.add('miss'); btns[y].classList.add('miss');
+      setTimeout(() => { btns[x].classList.remove('miss'); btns[y].classList.remove('miss'); face(x, false); face(y, false); st.open = []; st.lock = false; }, 1000);
+    }
+  }
+  function finish() {
+    addCosmo(50); sfx.win();
+    let prize = '';
+    if (save.bronze < BRONZE.length) {
+      const c = BRONZE[save.bronze]; save.bronze++; persist();
+      prize = `${constSVG(c, 'cosmo')}<h2>¡Constelación de ${c.name}!</h2>`;
+    } else prize = '<h2>¡Tablero completado!</h2>';
+    showModal(`<p class="eyebrow">Constelación completa</p>${prize}<p>Lo has conseguido en ${st.moves} intentos. +50 de cosmos.</p>`,
+      [{ label: 'Salir', fn: () => go(home) }, { label: 'Jugar otra vez', primary: true, fn: () => go(memoryGame, set) }]);
+  }
+}
+
+/* ---------- Colección ---------- */
+function collection() {
+  const ri = rankOf(save.cosmo);
+  screen(`<div><p class="eyebrow">Mi colección</p><h2>Armaduras conseguidas</h2>
+    <p class="lead">Las armaduras de oro se ganan conquistando las Doce Casas. Las constelaciones de bronce, completando tableros de Constelaciones gemelas.</p></div>
+    <div class="panel" style="display:grid;gap:12px"><h3>Rango de cosmos</h3>
+      <div class="ranks">${RANKS.map((r, i) => `<div class="rank ${i <= ri ? 'have' : ''}"><b>${r.n}</b>${r.min} ✦</div>`).join('')}</div></div>
+    <div style="display:grid;gap:12px"><h3>Armaduras de oro</h3>
+      <div class="collection">${SIGNS.map((h, i) => `<div class="cloth ${save.houses[i] ? 'won' : 'locked'}"><span class="portrait">${knightSVG(i, save.houses[i] ? '' : 'silhouette')}</span><b>${h.name}</b><span>${save.houses[i] ? starsHTML(save.houses[i]) : h.sub}</span></div>`).join('')}</div></div>
+    <div style="display:grid;gap:12px"><h3>Constelaciones de bronce</h3>
+      <div class="collection">${BRONZE.map((c, i) => `<div class="cloth ${i < save.bronze ? 'won' : 'locked'}">${constSVG(c, i < save.bronze ? 'cosmo' : 'dim')}<b>${c.name}</b><span>${i < save.bronze ? 'Conseguida' : 'Por descubrir'}</span></div>`).join('')}</div></div>`);
+}
+
+/* ---------- Mapa de tablas ---------- */
+function mapScreen() {
+  const weak = weakFacts();
+  const s = screen(`<div><p class="eyebrow">Mapa de mis tablas</p><h2>¿Qué sé y qué me cuesta?</h2>
+    <p class="lead">Cada casilla es una multiplicación. Se va coloreando según aciertas o fallas en cualquier juego.</p></div>
+    <div class="panel" style="display:grid;gap:14px">
+      <div class="tablewrap"><table class="map"><tr><th>×</th>${range(1, 10).map(n => `<th>${n}</th>`).join('')}</tr>
+        ${range(1, 10).map(a => `<tr><th>${a}</th>${range(1, 10).map(b => `<td class="${mastery(a, b)}" title="${a} × ${b}">${a * b}</td>`).join('')}</tr>`).join('')}</table></div>
+      <div class="legend"><span><i style="background:#1a2058"></i>Sin practicar</span><span><i style="background:var(--bad)"></i>Me cuesta</span><span><i style="background:var(--cosmo)"></i>Casi la sé</span><span><i style="background:var(--gold)"></i>Dominada</span></div>
+    </div>
+    <div class="panel" style="display:grid;gap:12px"><h3>Las que más me cuestan</h3>
+      ${weak.length ? `<div class="weak-list">${weak.map(([a, b]) => `<span>${a} × ${b} = ${a * b}</span>`).join('')}</div>
+        <div class="row"><button class="btn gold" id="pw">Entrenar estas</button><button class="btn" id="mw">Meteoros con estas</button></div>`
+        : '<p class="lead" style="margin:0">Todavía no hay ninguna. ¡Juega un poco y aquí aparecerán las que conviene repasar!</p>'}
+    </div>`);
+  if (weak.length) { $('#pw', s).onclick = () => go(train, 'weak'); $('#mw', s).onclick = () => go(meteorGame, 'weak'); }
+}
+
+/* ---------- Cielo estrellado ---------- */
+(function sky() {
+  const c = $('#sky'), x = c.getContext('2d');
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let stars = [];
+  function size() {
+    c.width = innerWidth * devicePixelRatio; c.height = innerHeight * devicePixelRatio;
+    stars = Array.from({ length: Math.round(innerWidth * innerHeight / 5000) }, () => ({ x: Math.random() * c.width, y: Math.random() * c.height, r: (Math.random() * 1.3 + .3) * devicePixelRatio, p: Math.random() * 6.28, s: .5 + Math.random() * 1.5 }));
+  }
+  function draw(t) {
+    x.clearRect(0, 0, c.width, c.height);
+    const g = x.createRadialGradient(c.width * .8, c.height * .1, 0, c.width * .8, c.height * .1, c.width * .7);
+    g.addColorStop(0, 'rgba(90,70,190,.25)'); g.addColorStop(1, 'rgba(10,15,44,0)');
+    x.fillStyle = g; x.fillRect(0, 0, c.width, c.height);
+    for (const s of stars) {
+      x.globalAlpha = .35 + .65 * Math.abs(Math.sin(s.p + t / 1000 * s.s));
+      x.fillStyle = '#e8ecff'; x.beginPath(); x.arc(s.x, s.y, s.r, 0, 6.28); x.fill();
+    }
+    x.globalAlpha = 1;
+    if (!still) requestAnimationFrame(draw);
+  }
+  size(); addEventListener('resize', () => { size(); if (still) draw(0); });
+  requestAnimationFrame(draw);
+})();
+
+renderHeader();
+go(home);
+})();
+</script>
+
+</body>
+</html>
