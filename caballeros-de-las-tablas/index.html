@@ -430,18 +430,18 @@ const RANKS = [
 
 /* ---------- Personajes (dibujos originales en SVG) ---------- */
 const GOLD = [
-  { hair: '#c99be0', style: 'long', eyes: '#7b4fb0', crest: 'ram' },
-  { hair: '#4a2e1f', style: 'short', eyes: '#6a4320', crest: 'bull' },
-  { hair: '#3d6fd1', style: 'long', eyes: '#2c4fa8', crest: 'twin' },
-  { hair: '#27406b', style: 'spiky', eyes: '#8a1f2b', crest: 'claw' },
-  { hair: '#9a5a22', style: 'spiky', eyes: '#3a7a2a', crest: 'mane' },
+  { hair: '#d4b8e8', style: 'long', eyes: '#3f8a7a', crest: 'ram' },
+  { hair: '#3a2a1f', style: 'short', eyes: '#4a3a2a', crest: 'bull', skin: '#c99068' },
+  { hair: '#4b45b8', style: 'spiky', eyes: '#2c4fa8', crest: 'twin' },
+  { hair: '#5a4fb8', style: 'spiky', eyes: '#4a7ab8', crest: 'claw', skin: '#e2b08a' },
+  { hair: '#7a6528', style: 'spiky', eyes: '#3a7aa8', crest: 'mane', skin: '#e0a878' },
   { hair: '#f1d26b', style: 'long', eyes: null, crest: 'lotus' },
-  { hair: '#22222e', style: 'long', eyes: '#3a7a4a', crest: 'scale' },
-  { hair: '#2b4fa0', style: 'wavy', eyes: '#3f7fc6', crest: 'tail' },
-  { hair: '#7a3b1c', style: 'short', eyes: '#3a6aa8', crest: 'wings' },
-  { hair: '#2f3b2f', style: 'short', eyes: '#4a4a4a', crest: 'goat' },
-  { hair: '#2a8a8a', style: 'long', eyes: '#1f6a8a', crest: 'wave' },
-  { hair: '#7fb6e8', style: 'wavy', eyes: '#3a5ab0', crest: 'fins', rose: true },
+  { hair: '#2a2a3a', style: 'long', eyes: '#3a7a4a', crest: 'scale' },
+  { hair: '#5a46b0', style: 'wavy', eyes: '#3f7fc6', crest: 'tail' },
+  { hair: '#5a3a24', style: 'short', eyes: '#3a6aa8', crest: 'wings' },
+  { hair: '#1f4a4f', style: 'short', eyes: '#3a5a6a', crest: 'goat' },
+  { hair: '#3a7aa8', style: 'long', eyes: '#2a6a9a', crest: 'wave' },
+  { hair: '#8fdce4', style: 'wavy', eyes: '#3a7ab0', crest: 'fins', rose: true },
 ];
 const SKIN = '#f6d3b3', SKIN_S = '#e2ad86', GOLD_D = '#8a5a10';
 const HAIR_BACK = {
@@ -490,7 +490,7 @@ function figureSVG(k, label, glyph, cape, cls = '') {
     ${glyph ? `<text x="60" y="114" text-anchor="middle" font-size="11" fill="${GOLD_D}" font-family="Segoe UI Symbol, Noto Sans Symbols, DejaVu Sans, sans-serif">${glyph}</text>` : ''}
     ${gP('M47,77 L60,86 L73,77 L73,82 L60,91 L47,82Z')}
     ${mirror(gP('M16,98 Q13,79 34,77 Q48,79 47,91 Q33,88 16,98Z'))}
-    ${FACE}
+    ${k.skin ? FACE.replace(SKIN, k.skin) : FACE}
     <path d="M43,47 Q41,25 60,25 Q79,25 77,47 L72,38 L68,46 L63,35 L58,45 L53,36 L48,46Z" fill="${k.hair}"/>
     ${eyesSVG(k.eyes)}${brows}
     <path d="M57,63.5 Q60,65 63,63.5" fill="none" stroke="#a0524a" stroke-width="1.3" stroke-linecap="round"/>
@@ -506,12 +506,12 @@ function knightSVG(i, cls = '') {
   return figureSVG(GOLD[i], `Caballero de oro de ${SIGNS[i].name}`, SIGNS[i].glyph + '\uFE0E', true, cls);
 }
 const HEROES = [
-  { name: 'Pegaso', desc: 'Valiente. Nunca se rinde, aunque falle.', hair: '#6b3a1e', style: 'spiky', eyes: '#6a4320', crest: 'pwing', dark: '#56688e', mid: '#a9b6d3' },
+  { name: 'Pegaso', desc: 'Valiente. Nunca se rinde, aunque falle.', hair: '#4a2a18', style: 'spiky', eyes: '#7a4a28', crest: 'pwing', dark: '#56688e', mid: '#a9b6d3' },
   { name: 'Dragón', desc: 'Fuerte y con el escudo más duro.', hair: '#15151f', style: 'long', eyes: '#2a6a3a', crest: 'dragon', dark: '#1f5a32', mid: '#3f9a5a' },
-  { name: 'Cisne', desc: 'Tranquilo y frío como el hielo.', hair: '#e6d27a', style: 'short', eyes: '#3a7ac0', crest: 'swan', dark: '#56789a', mid: '#bcd4ea' },
-  { name: 'Andrómeda', desc: 'Amable, protege con su cadena.', hair: '#4f9a5a', style: 'wavy', eyes: '#4a8a4a', crest: 'tiara', dark: '#9a3a6a', mid: '#e59ac0',
+  { name: 'Cisne', desc: 'Tranquilo y frío como el hielo.', hair: '#f2c63a', style: 'spiky', eyes: '#4a8ad0', crest: 'swan', dark: '#56789a', mid: '#bcd4ea' },
+  { name: 'Andrómeda', desc: 'Amable, protege con su cadena.', hair: '#3cae3c', style: 'wavy', eyes: '#2a9a6a', crest: 'tiara', dark: '#9a3a6a', mid: '#e59ac0',
     extra: [0, 1, 2, 3, 4, 5, 6].map(j => `<ellipse cx="${20 + j * 6}" cy="${101 + j * 4.2}" rx="2.8" ry="2" fill="none" stroke="#d8dce8" stroke-width="1.4"/>`).join('') },
-  { name: 'Fénix', desc: 'Siempre renace con más fuerza.', hair: '#1d2a4f', style: 'spiky', eyes: '#4a3a7a', crest: 'flame', dark: '#4a1f2a', mid: '#8a3a3a' },
+  { name: 'Fénix', desc: 'Siempre renace con más fuerza.', hair: '#1d2a5f', style: 'spiky', eyes: '#3a4a8a', crest: 'flame', dark: '#4a1f2a', mid: '#8a3a3a' },
   { name: 'Unicornio', desc: 'Rápido y lleno de energía.', hair: '#8a5a3a', style: 'short', eyes: '#4a3a6a', crest: 'horn', dark: '#5a4a8a', mid: '#b8a8e0' },
 ];
 function heroSVG(i, cls = '') {
