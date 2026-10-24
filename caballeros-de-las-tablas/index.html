@@ -44,7 +44,7 @@ body {
 }
 #sky { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
 #app { position: relative; z-index: 1; max-width: 980px; margin: 0 auto; }
-button { font: inherit; color: inherit; cursor: pointer; }
+button { font: inherit; color: inherit; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 button:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid var(--cosmo); outline-offset: 2px; }
 h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; letter-spacing: .02em; }
 
@@ -181,7 +181,7 @@ h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; le
 .feedback.bad { color: var(--bad); }
 .explain { background: color-mix(in srgb, var(--bad) 10%, var(--panel)); border: 1px solid color-mix(in srgb, var(--bad) 45%, var(--line)); border-radius: 12px; padding: 14px; display: grid; gap: 10px; }
 .explain b { color: var(--gold); }
-.keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 340px; margin: 0 auto; width: 100%; }
+.keypad { user-select: none; -webkit-user-select: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 340px; margin: 0 auto; width: 100%; }
 .key { padding: 16px 0; border-radius: 12px; background: var(--panel-2); border: 1px solid var(--line); font-size: 1.5rem; font-weight: 900; font-variant-numeric: tabular-nums; }
 .key:hover { border-color: var(--cosmo); }
 .key:active { transform: scale(.96); }
@@ -226,7 +226,7 @@ h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; le
 @keyframes boom { to { transform: var(--pos) scale(1.8); opacity: 0; filter: brightness(2); } }
 .ground-msg { position: absolute; left: 50%; bottom: 44px; transform: translateX(-50%); background: color-mix(in srgb, var(--bad) 85%, #000); color: #fff; padding: 6px 12px; border-radius: 999px; font-weight: 900; white-space: nowrap; animation: fadeout 1.6s ease forwards; }
 @keyframes fadeout { 70% { opacity: 1; } to { opacity: 0; transform: translate(-50%, -14px); } }
-.hud { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-weight: 900; font-variant-numeric: tabular-nums; }
+.hud { scroll-margin-top: 10px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-weight: 900; font-variant-numeric: tabular-nums; }
 .hud .lives { color: var(--bad); letter-spacing: 3px; }
 .meteor-layout { display: grid; grid-template-columns: minmax(0, 1fr) 270px; gap: 16px; align-items: stretch; }
 .meteor-input { display: grid; gap: 14px; align-content: center; }
@@ -301,9 +301,48 @@ table.map td.m-bad { background: color-mix(in srgb, var(--bad) 60%, var(--night)
   .heroes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .hero-card .portrait { width: 96px; height: 96px; }
   .me-face { width: 72px; height: 72px; }
-  .guardian { grid-template-columns: 96px 1fr; }
-  .guardian-art { width: 96px; height: 96px; }
-  .sky-area { height: 330px; }
+  .guardian { grid-template-columns: 72px 1fr; gap: 12px; padding: 14px; }
+  .guardian-art { width: 72px; height: 72px; }
+  .guardian h2 { font-size: 1.15rem; }
+  .guardian .say { display: none; }
+  .sky-area { height: clamp(240px, 100svh - 440px, 440px); }
+  /* Móvil: cabecera y huecos más compactos para que pregunta y teclado quepan en pantalla */
+  .top { padding-block: 10px; gap: 8px; }
+  .brand-mark { width: 32px; height: 32px; }
+  .brand b { font-size: 1.02rem; }
+  .brand small { display: none; }
+  .screen { gap: 14px; }
+  .battle { gap: 12px; }
+  .question { padding-block: 8px 0; }
+  .you .portrait { width: 40px; height: 40px; }
+  .key { padding: 12px 0; }
+  .meteor-input .key { padding: 9px 0; }
+  .big-entry { font-size: 2.1rem; }
+  .foot { padding-top: 12px; }
+}
+/* Pantallas táctiles: no hay teclado físico, sobra la nota */
+@media (hover: none) and (pointer: coarse) {
+  .hint-note { display: none; }
+}
+/* Móvil en horizontal: zona de juego y teclado lado a lado */
+@media (max-height: 500px) and (orientation: landscape) {
+  .battle { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .meteor-layout { grid-template-columns: minmax(0, 1fr) 230px; }
+  .meteor-input { grid-template-columns: 1fr; gap: 8px; padding: 10px; }
+  .meteor-input .key { padding: 6px 0; font-size: 1.1rem; }
+  .meteor-input .keypad { gap: 6px; }
+  .big-entry { font-size: 1.6rem; }
+  .sky-area { height: clamp(200px, 100svh - 60px, 440px); }
+  .options { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .opt { padding-block: 10px; }
+  .question { padding-block: 4px 0; }
+  .keypad { gap: 6px; }
+  .key { padding: 8px 0; font-size: 1.25rem; }
+  .battle .panel { padding: 12px; }
+  .q-text { font-size: 2.3rem; }
+  .hero { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
+  .modes, .extras { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .houses { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 @media (max-width: 440px) {
   .houses { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -693,6 +732,13 @@ function go(fn, ...args) {
   fn(...args);
   window.scrollTo(0, 0);
 }
+function fitPlay(el, top) {
+  // En pantallas bajas (móvil), si la zona de juego no cabe, desplaza para ver pregunta y teclado a la vez
+  requestAnimationFrame(() => {
+    if (!el || el.getBoundingClientRect().bottom <= innerHeight) return;
+    if (top) top.scrollIntoView({ block: 'start' }); else el.scrollIntoView({ block: 'end' });
+  });
+}
 function backBtn(label = '← Volver al Santuario', to = home) {
   const b = document.createElement('button'); b.className = 'back'; b.textContent = label;
   b.addEventListener('click', () => go(to)); return b;
@@ -843,6 +889,7 @@ function battle(i) {
       <div class="panel">${keypadHTML()}<p class="hint-note">También puedes usar el teclado y pulsar Enter.</p></div>
     </div>`, housesScreen, '← Volver a las casas');
   const qEl = $('#q', s), fb = $('#fb', s), slot = $('#explain-slot', s);
+  fitPlay($('.battle', s));
   const cur = () => st.queue[0];
   function drawQ() {
     const [a, b] = cur();
@@ -956,6 +1003,7 @@ function train(set) {
       <div class="row" style="justify-content:center; margin-top:12px"><button class="btn" id="hint">💡 Pista</button><button class="btn gold" id="next" hidden>Siguiente →</button></div>
     </div>`, trainSetup, '← Elegir otra tabla');
   const qEl = $('#q', s), fb = $('#fb', s), opts = $('#opts', s), hs = $('#hint-slot', s);
+  fitPlay($('.panel', s));
   function dots() { $('#dots').innerHTML = qs.map((_, i) => `<i class="${st.res[i] === true ? 'ok' : st.res[i] === false ? 'bad' : i === st.n ? 'now' : ''}"></i>`).join(''); }
   function draw() {
     const [a, b] = qs[st.n];
@@ -1008,6 +1056,7 @@ function meteorGame(set) {
       <div class="start-overlay" id="ov"><div style="display:grid;gap:12px;justify-items:center"><h2>¿Preparada?</h2><p class="lead">Escribe el resultado y pulsa Enter.</p><button class="btn gold" id="go">¡Empezar!</button></div></div></div>
     <div class="panel meteor-input"><div class="big-entry" id="entry"></div><div>${keypadHTML()}</div></div></div>`, meteorSetup, '← Elegir otra tabla');
   const area = $('#area', s), entryEl = $('#entry', s);
+  fitPlay($('.meteor-layout', s), $('.hud', s));
   const st = { m: [], entry: '', lives: 3, score: 0, combo: 0, killed: 0, last: 0, prev: 0, running: false, raf: 0, spawnAt: 0 };
   const H = () => area.clientHeight, W = () => area.clientWidth;
   function hud() { $('#score').textContent = st.score; $('#combo').textContent = st.combo; $('#lives').textContent = '♥'.repeat(st.lives) + '♡'.repeat(3 - st.lives); entryEl.textContent = st.entry; }
