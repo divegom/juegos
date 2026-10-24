@@ -302,6 +302,27 @@ table.map td.m-bad { background: color-mix(in srgb, var(--bad) 60%, var(--night)
 .meander { height: 14px; margin-bottom: 14px; opacity: .55; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='14' viewBox='0 0 28 14'%3E%3Cpath d='M0 13H6V4H18V10H11V7H14' fill='none' stroke='%23f4c652' stroke-width='1.6'/%3E%3Cpath d='M14 1H28' fill='none' stroke='%23f4c652' stroke-width='1.6'/%3E%3Cpath d='M0 13H28' fill='none' stroke='%23f4c652' stroke-width='1.2' stroke-opacity='.6'/%3E%3C/svg%3E") repeat-x; }
 .panel, .mode, .house, .hero-card, .cloth { backdrop-filter: blur(2px); }
 
+
+/* Fondos de la serie original: una escena por pantalla, oscurecida para que el texto se lea */
+#scene { position: fixed; inset: 0; z-index: 0; pointer-events: none; background: var(--night) center 30% / cover no-repeat; opacity: 0; transition: opacity .5s ease; }
+#scene.on { opacity: .5; }
+#scene::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10, 15, 44, .25), rgba(10, 15, 44, .7) 65%, var(--night)); }
+body.has-scene #sanctuary { opacity: .3; }
+.banner { position: relative; aspect-ratio: 16 / 5; border-radius: var(--r); border: 1px solid var(--gold-deep); overflow: hidden; background: var(--panel) center 62% / cover no-repeat; box-shadow: 0 0 40px color-mix(in srgb, var(--gold) 18%, transparent); }
+.banner::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(10, 15, 44, .85), rgba(10, 15, 44, 0) 55%); }
+.banner span { position: absolute; z-index: 1; left: 18px; bottom: 14px; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.3rem, 4vw, 2.1rem); color: var(--gold); text-shadow: 0 2px 10px #000; line-height: 1.1; }
+.banner small { display: block; font-family: var(--font-body); font-size: .9rem; color: var(--ink); font-weight: 800; }
+.banner.home-b { background-image: var(--img-aventura); }
+.mode { position: relative; overflow: hidden; isolation: isolate; }
+.mode::after { content: ""; position: absolute; inset: 0 0 0 30%; z-index: -1; background: var(--pic) center / cover no-repeat; opacity: .4; -webkit-mask-image: linear-gradient(90deg, transparent, #000 70%); mask-image: linear-gradient(90deg, transparent, #000 70%); transition: opacity .2s ease; }
+.mode:hover::after { opacity: .6; }
+#m-houses { --pic: var(--img-casas); }
+#m-train { --pic: var(--img-train); }
+#m-meteor { --pic: var(--img-meteoros); }
+#m-memory { --pic: var(--img-memoria); }
+.sky-area::before { content: ""; position: absolute; inset: 0; background: var(--img-meteoros) center / cover no-repeat; opacity: .45; }
+.finale-pic { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; object-position: center 25%; border-radius: 12px; border: 1px solid var(--gold-deep); }
+
 @media (max-width: 760px) {
   .battle, .meteor-layout { grid-template-columns: 1fr; }
   .meteor-input { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); align-items: center; }
@@ -334,6 +355,7 @@ table.map td.m-bad { background: color-mix(in srgb, var(--bad) 60%, var(--night)
   .foot { padding-top: 12px; }
   #zodiac-wheel { width: 220px; height: 220px; top: -70px; right: -70px; }
   #sanctuary { height: 34vh; }
+  .banner { aspect-ratio: 16 / 7; }
   .meander { margin-bottom: 8px; }
 }
 /* Pantallas táctiles: no hay teclado físico, sobra la nota */
@@ -376,6 +398,7 @@ table.map td.m-bad { background: color-mix(in srgb, var(--bad) 60%, var(--night)
 <body>
 
 <canvas id="sky" aria-hidden="true"></canvas>
+<div id="scene" aria-hidden="true"></div>
 <svg id="sanctuary" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
   <defs><linearGradient id="sg-mtn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2f6e"/><stop offset="1" stop-color="#0a0f2c"/></linearGradient>
   <radialGradient id="sg-glow" cx="50%" cy="20%" r="40%"><stop offset="0" stop-color="#f4c652" stop-opacity=".35"/><stop offset="1" stop-color="#f4c652" stop-opacity="0"/></radialGradient></defs>
@@ -767,6 +790,7 @@ function go(fn, ...args) {
   if (cleanup) { cleanup(); cleanup = null; }
   keyHandler = null;
   closeModal();
+  setScene(fn);
   fn(...args);
   window.scrollTo(0, 0);
 }
@@ -820,6 +844,7 @@ function home() {
   const pct = next ? Math.round((save.cosmo - r.min) / (next.min - r.min) * 100) : 100;
   const conquered = save.houses.filter(Boolean).length;
   view.innerHTML = `<section class="screen">
+    <div class="banner home-b" role="img" aria-label="Seiya y los caballeros de bronce con Atenea en el Santuario"><span>¡Arde, cosmos!<small>Caballeros de las Tablas</small></span></div>
     <div class="panel hero">
       <div class="rankbox">
         <p class="eyebrow">Santuario de las Tablas</p>
@@ -985,6 +1010,7 @@ function battle(i) {
     showModal(`<p class="eyebrow">Casa de ${h.name} conquistada</p>
       ${finale ? `<div class="duo">${knightSVG(i)}${athenaSVG()}</div>` : knightSVG(i)}
       <h2>${finale ? '¡Has llegado hasta Atenea!' : first ? '¡Armadura de Oro de ' + h.name + '!' : '¡Casa superada!'}</h2>
+      ${finale ? `<img class="finale-pic" src="${IMG.aventura}" alt="Atenea con los caballeros de bronce">` : ''}
       ${finale ? '<p>Has cruzado las Doce Casas. Atenea te da las gracias: el Santuario está a salvo gracias a ti.</p>' : ''}
       <div class="big-stars">${[0, 1, 2].map(k => k < stars ? '★' : '<span class="off">★</span>').join('')}</div>
       <p>${st.errors === 0 ? 'Sin ningún error. ¡Perfecto!' : `Con ${st.errors} ${st.errors === 1 ? 'error' : 'errores'}. ${stars < 3 ? 'Repítela sin errores para lograr 3 estrellas.' : ''}`} Bonus: +${bonus} de cosmos.</p>`,
@@ -1283,6 +1309,26 @@ function mapScreen() {
   size(); addEventListener('resize', () => { size(); if (still) draw(0); });
   requestAnimationFrame(draw);
 })();
+
+/* ---------- Fondos de la serie ---------- */
+const IMG = {
+  home: 'img/home.webp',
+  aventura: 'img/aventura.webp',
+  train: 'img/train.webp',
+  casas: 'img/casas.webp',
+  batalla: 'img/batalla.webp',
+  meteoros: 'img/meteoros.webp',
+  memoria: 'img/memoria.webp',
+  armaduras: 'img/armaduras.webp',
+};
+Object.entries(IMG).forEach(([k, u]) => document.documentElement.style.setProperty('--img-' + k, `url("${u}")`));
+const SCENES = new Map([[home, 'home'], [chooseHero, 'armaduras'], [housesScreen, 'casas'], [battle, 'batalla'], [trainSetup, 'train'], [train, 'train'],
+  [meteorSetup, 'meteoros'], [meteorGame, 'meteoros'], [memorySetup, 'memoria'], [memoryGame, 'memoria'], [collection, 'armaduras'], [mapScreen, 'home']]);
+function setScene(fn) {
+  const el = $('#scene');
+  el.style.backgroundImage = `url("${IMG[SCENES.get(fn) || 'home']}")`;
+  el.classList.add('on'); document.body.classList.add('has-scene');
+}
 
 renderHeader();
 go(home);
