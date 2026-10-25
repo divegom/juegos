@@ -353,7 +353,6 @@ body.has-scene #sanctuary { opacity: .3; }
 .bar.ice i { background: linear-gradient(90deg, #8fd3ff, #ffffff); transition: none; }
 .bar.ice.low i { background: linear-gradient(90deg, var(--bad), #ffc2cc); }
 .time-label { font-size: .8rem; color: var(--muted); text-align: center; margin-top: 4px; }
-.frozen .q-text { color: #bfe9ff; text-shadow: 0 0 14px #7fd8ff; }
 .tide { position: relative; isolation: isolate; height: clamp(330px, 100svh - 240px, 480px); border-radius: var(--r); border: 1px solid var(--line); overflow: hidden; display: grid; grid-template-columns: 76px minmax(0, 1fr); background: linear-gradient(180deg, #06183a, #0b2c5a); }
 .tide::before { content: ""; position: absolute; inset: 0; z-index: -2; background: var(--img-poseidon) center / cover no-repeat; opacity: .3; }
 .water { position: absolute; left: 0; right: 0; bottom: 0; height: 20%; z-index: -1; background: linear-gradient(180deg, rgba(110, 210, 255, .55), rgba(16, 70, 160, .85)); border-top: 3px solid rgba(210, 245, 255, .85); box-shadow: 0 -6px 24px rgba(127, 216, 255, .45); }
@@ -383,6 +382,44 @@ body.has-scene #sanctuary { opacity: .3; }
 .tide .start-overlay { z-index: 2; }
 .thetis { display: flex; gap: 10px; align-items: center; }
 .thetis .portrait { width: 56px; height: 56px; flex: none; border-color: var(--cosmo); }
+/* Choque de cosmos (Asgard) */
+.clash { --gap: 96px; position: relative; isolation: isolate; height: 250px; border-radius: var(--r); border: 1px solid var(--line); overflow: hidden; background: radial-gradient(ellipse at 50% 110%, rgba(191, 233, 255, .25), transparent 60%), linear-gradient(180deg, #060a22, #121a5a); }
+.clash::before { content: ""; position: absolute; inset: 0; z-index: -2; background: var(--img-asgard) center / cover no-repeat; opacity: .28; }
+.fighter { position: absolute; top: 50%; transform: translateY(-50%); z-index: 2; display: grid; justify-items: center; gap: 4px; width: 92px; font-weight: 900; font-size: .85rem; text-shadow: 0 1px 6px #000; text-align: center; }
+.fighter.me { left: 8px; }
+.fighter.foe { right: 8px; }
+.fighter .portrait { width: 76px; height: 76px; }
+.fighter.me .portrait { border-color: var(--cosmo); box-shadow: 0 0 24px var(--cosmo); }
+.fighter.foe .portrait { border-color: var(--foe); box-shadow: 0 0 24px var(--foe); }
+.fighter b { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.beam { position: absolute; top: calc(50% - 12px); height: 24px; z-index: 1; border-radius: 999px; filter: blur(.5px); }
+.beam.mine { left: var(--gap); width: calc((100% - 2 * var(--gap)) * var(--p)); background: linear-gradient(90deg, rgba(127, 216, 255, .3), #7fd8ff 40%, #ffffff); box-shadow: 0 0 22px #7fd8ff, 0 0 6px #fff inset; }
+.beam.theirs { right: var(--gap); width: calc((100% - 2 * var(--gap)) * (1 - var(--p))); background: linear-gradient(270deg, transparent, var(--foe) 40%, #ffffff); box-shadow: 0 0 22px var(--foe); }
+.beam { animation: hum .18s linear infinite alternate; }
+@keyframes hum { to { transform: scaleY(1.25); } }
+.clash-ball { position: absolute; top: 50%; left: calc(var(--gap) + (100% - 2 * var(--gap)) * var(--p)); width: 64px; height: 64px; margin: -32px 0 0 -32px; z-index: 3; border-radius: 50%; background: radial-gradient(circle, #fff 0 22%, rgba(255, 255, 255, .8) 30%, rgba(244, 198, 82, .55) 50%, transparent 70%); animation: crackle .25s ease-in-out infinite alternate; }
+@keyframes crackle { to { transform: scale(1.18) rotate(20deg); filter: brightness(1.3); } }
+.clash.push .beam.mine { animation: kick .35s ease; }
+@keyframes kick { 40% { transform: scaleY(1.8); filter: brightness(1.6); } }
+.clash.surge .beam.theirs { transform: scaleY(1.7); filter: brightness(1.5); animation: none; }
+.clash.surge .fighter.foe .portrait { animation: shake .4s ease 3; }
+.clash.special .beam.mine { transform: scaleY(2.6); filter: brightness(2); animation: none; }
+.clash.special { animation: shake .4s ease 2; }
+.clash.danger { box-shadow: 0 0 0 2px var(--bad) inset; }
+.clash.winning { box-shadow: 0 0 0 2px var(--cosmo) inset; }
+.clash.won .beam.theirs, .clash.won .fighter.foe { opacity: .25; transition: opacity .6s; }
+.clash.lost .beam.mine, .clash.lost .fighter.me { opacity: .25; transition: opacity .6s; }
+.shout { position: absolute; left: 50%; top: 14px; transform: translateX(-50%); z-index: 4; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.05rem, 4vw, 1.6rem); white-space: nowrap; opacity: 0; text-shadow: 0 2px 12px #000; pointer-events: none; }
+.shout.mine { color: #bff0ff; }
+.shout.theirs { color: var(--foe); top: auto; bottom: 14px; }
+.shout.on { animation: shout 1.6s ease forwards; }
+@keyframes shout { 0% { opacity: 0; transform: translateX(-50%) scale(.6); } 15% { opacity: 1; transform: translateX(-50%) scale(1.1); } 75% { opacity: 1; transform: translateX(-50%) scale(1); } 100% { opacity: 0; } }
+.clash .start-overlay { z-index: 5; }
+.clash-panel { display: grid; gap: 6px; }
+.combo { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: center; font-size: .8rem; font-weight: 900; color: var(--cosmo); text-transform: uppercase; letter-spacing: .08em; }
+.combo .bar { margin: 0; }
+.combo .bar i { background: linear-gradient(90deg, var(--gold), #fff3b0); transition: width .25s ease; }
+.clash-panel .question { padding-block: 8px 0; }
 #m-asgard { --pic: var(--img-asgard); }
 #m-poseidon { --pic: var(--img-poseidon); }
 .modal-card .portrait { width: 120px; height: 120px; margin: 0 auto; }
@@ -428,6 +465,11 @@ body.has-scene #sanctuary { opacity: .3; }
   .pillar-col { padding: 10px 2px 10px 8px; }
   .rival .portrait { width: 64px; height: 64px; }
   .diff { padding: 12px 14px; }
+  .clash { --gap: 70px; height: 190px; }
+  .fighter { width: 66px; font-size: .72rem; }
+  .fighter .portrait { width: 56px; height: 56px; }
+  .clash-ball { width: 48px; height: 48px; margin: -24px 0 0 -24px; }
+  .beam { height: 18px; top: calc(50% - 9px); }
   .diff .toggle button { padding: 9px 10px; font-size: .92rem; }
 }
 /* Pantallas táctiles: no hay teclado físico, sobra la nota */
@@ -456,6 +498,7 @@ body.has-scene #sanctuary { opacity: .3; }
   .tide { height: clamp(220px, 100svh - 70px, 440px); }
   .orbs { grid-template-columns: repeat(6, minmax(0, 1fr)); }
   .orb { width: min(100%, 80px); }
+  .clash { height: clamp(150px, 100svh - 260px, 220px); }
 }
 @media (max-width: 440px) {
   .houses { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -944,7 +987,7 @@ function home() {
       <button class="mode" id="m-train">${constSVG(BRONZE[5], 'cosmo').replace('class="const', 'class="art const')}<span><h3>Entrenamiento</h3><p>Practica una tabla sin prisa, con pistas de estrellas.</p></span></button>
       <button class="mode" id="m-meteor">${constSVG(BRONZE[0], 'lit').replace('class="const', 'class="art const')}<span><h3>Lluvia de meteoros</h3><p>Destruye los meteoros escribiendo el resultado. Récord: ${meteorBest()}.</p></span></button>
       <button class="mode" id="m-memory">${constSVG(ZODIAC[2], 'cosmo').replace('class="const', 'class="art const')}<span><h3>Constelaciones gemelas</h3><p>Juego de memoria: une cada operación con su resultado.</p></span></button>
-      <button class="mode" id="m-asgard"><span class="portrait art"><img class="knight photo" src="${FACES.hilda}" alt="Hilda de Polaris"></span><span><h3>Saga de Asgard</h3><p>Duelos contrarreloj contra los Dioses Guerreros. ${save.asgard.filter(Boolean).length}/7 zafiros.</p></span></button>
+      <button class="mode" id="m-asgard"><span class="portrait art"><img class="knight photo" src="${FACES.hilda}" alt="Hilda de Polaris"></span><span><h3>Saga de Asgard</h3><p>Choque de cosmos contra los Dioses Guerreros. ${save.asgard.filter(Boolean).length}/7 zafiros.</p></span></button>
       <button class="mode" id="m-poseidon"><span class="portrait art"><img class="knight photo" src="${FACES.poseidon}" alt="Poseidón"></span><span><h3>Saga de Poseidón</h3><p>Rompe los pilares antes de que suba el agua. ${save.poseidon.filter(Boolean).length}/8 pilares.</p></span></button>
     </div>
     <div class="extras">
@@ -1391,15 +1434,14 @@ const FACES = {
 // Estrellas de la Osa Mayor (0 Dubhe … 6 Benetnasch) y la Polar (7)
 const DIPPER = { p: [[78, 26], [80, 50], [60, 56], [57, 36], [41, 40], [25, 42], [9, 56], [74, 6]], l: [[0, 1], [1, 2], [2, 3], [3, 0], [3, 4], [4, 5], [5, 6]] };
 const WARRIORS = [
-  { name: 'Thor', star: 'Phecda', s: 2, face: 'thor', t: [2, 3], say: 'Mi martillo Mjölnir es más pesado que una montaña.' },
-  { name: 'Fenrir', star: 'Alioth', s: 4, face: 'fenrir', t: [4, 5], say: 'Los lobos y yo cazamos en manada.' },
-  { name: 'Hagen', star: 'Merak', s: 1, face: 'hagen', t: [6], say: 'Mi fuego y mi hielo te detendrán.' },
-  { name: 'Mime', star: 'Benetnasch', s: 6, face: 'mime', t: [7], say: 'Escucha mi arpa... cada nota es una pregunta.' },
-  { name: 'Alberich', star: 'Megrez', s: 3, face: 'alberich', t: [8], say: 'Soy el más listo de Asgard. ¿Podrás conmigo?' },
-  { name: 'Syd y Bud', star: 'Mizar y Alcor', s: 5, face: 'syd', t: [9], say: 'Somos dos, como la estrella doble de Mizar y Alcor.' },
-  { name: 'Sigfried', star: 'Dubhe', s: 0, face: 'sigfried', t: 'all', say: 'Soy el más fuerte de los Dioses Guerreros.' },
+  { name: 'Thor', star: 'Phecda', s: 2, face: 'thor', t: [2, 3], color: '#a77bff', move: '¡Martillo de Mjölnir!', say: 'Mi martillo Mjölnir es más pesado que una montaña.' },
+  { name: 'Fenrir', star: 'Alioth', s: 4, face: 'fenrir', t: [4, 5], color: '#6f9bff', move: '¡Garra del Lobo!', say: 'Los lobos y yo cazamos en manada.' },
+  { name: 'Hagen', star: 'Merak', s: 1, face: 'hagen', t: [6], color: '#ff9a4c', move: '¡Gran Ardor!', say: 'Mi fuego y mi hielo te detendrán.' },
+  { name: 'Mime', star: 'Benetnasch', s: 6, face: 'mime', t: [7], color: '#ff6a5a', move: '¡Réquiem de Cuerdas!', say: 'Escucha mi arpa... cada nota es una pregunta.' },
+  { name: 'Alberich', star: 'Megrez', s: 3, face: 'alberich', t: [8], color: '#6fe07a', move: '¡Espada de Amatista!', say: 'Soy el más listo de Asgard. ¿Podrás conmigo?' },
+  { name: 'Syd y Bud', star: 'Mizar y Alcor', s: 5, face: 'syd', t: [9], color: '#dff4ff', move: '¡Garra del Tigre Vikingo!', say: 'Somos dos, como la estrella doble de Mizar y Alcor.' },
+  { name: 'Sigfried', star: 'Dubhe', s: 0, face: 'sigfried', t: 'all', color: '#4f7bff', move: '¡Ventisca del Dragón!', say: 'Soy el más fuerte de los Dioses Guerreros.' },
 ];
-const DUEL_TIME = [16, 10, 6];
 function dipperSVG(cls = '') {
   const lit = WARRIORS.map((w, i) => save.asgard[i] > 0 ? w.s : -1), all = save.asgard.every(Boolean);
   const [d, , , , , , , pol] = DIPPER.p;
@@ -1414,7 +1456,7 @@ function gemsHTML() { return `<span class="gems" aria-hidden="true">${save.asgar
 function asgardScreen() {
   const won = save.asgard.filter(Boolean).length, next = save.asgard.findIndex(v => !v);
   const s = screen(`<div><p class="eyebrow">Saga de Asgard</p><h2>Los Dioses Guerreros</h2>
-    <p class="lead">Hilda de Polaris está bajo el hechizo del Anillo Nibelungo. Vence a los siete Dioses Guerreros y gana sus zafiros de Odín. ¡Cuidado! Cada pregunta tiene un tiempo antes de que la ventisca te congele.</p></div>
+    <p class="lead">Hilda de Polaris está bajo el hechizo del Anillo Nibelungo. Enfréntate a los siete Dioses Guerreros en un choque de cosmos: cada acierto empuja tu rayo contra el suyo. Gana sus zafiros de Odín para salvarla.</p></div>
     <div class="panel saga-top">${dipperSVG()}<div><h3>Zafiros de Odín: ${won}/7</h3>${gemsHTML()}
       <p class="lead">Cada estrella de la Osa Mayor es un Dios Guerrero. ${won === 7 ? '¡Hilda es libre gracias a ti!' : 'Enciéndelas todas para liberar a Hilda.'}</p></div></div>
     ${diffHTML()}
@@ -1430,123 +1472,131 @@ function asgardScreen() {
   bindDiff(s);
   s.querySelectorAll('.house:not(:disabled)').forEach(b => b.onclick = () => go(asgardDuel, +b.dataset.i));
 }
+// Choque de cosmos: empuje del rival (por segundo), su ataque especial y cuánto empuja cada acierto
+const CLASH = [{ push: 0.006, every: 15 }, { push: 0.01, every: 11 }, { push: 0.016, every: 8 }];
+const HERO_MOVES = ['¡Meteoro de Pegaso!', '¡Cólera del Dragón!', '¡Polvo de Diamante!', '¡Cadena Nebular!', '¡Vuelo del Ave Fénix!', '¡Galope del Unicornio!'];
+const COMBO_FULL = 4;
 function asgardDuel(i) {
-  const w = WARRIORS[i], lv = diff(), limit = DUEL_TIME[lv], total = 8;
-  const st = { queue: stageQueue(w.t, total), done: 0, lives: 3, entry: '', locked: true, started: false, wrong: false, t: limit, prev: 0, raf: 0, running: true };
-  const s = screen(`<div class="panel guardian rival" id="guardian">
-      <div class="guardian-art">${constSVG(DIPPER, 'cosmo')}${facePic(FACES[w.face], w.name)}</div>
-      <div><p class="eyebrow">Estrella ${w.star} · ${tablesLabel(w.t)}</p><h2>${w.name}, Dios Guerrero</h2>
-        <p class="say">«${w.say}»</p>
-        <div class="bar hp"><i id="hp" style="width:100%"></i></div>
-        <div class="bar-label" id="hp-label"></div></div>
+  const w = WARRIORS[i], lv = diff(), sp = CLASH[lv];
+  const heroName = save.hero != null ? HEROES[save.hero].name : 'Pegaso';
+  const move = HERO_MOVES[save.hero != null ? save.hero : 0];
+  const st = { p: 0.5, bag: [], q: null, combo: 0, errors: 0, hits: 0, lock: false, running: false, prev: 0, raf: 0, nextSpecial: sp.every, surge: 0, asked: 0 };
+  const s = screen(`<div class="hud"><span>${w.name} · ${tablesLabel(w.t)}</span><span>Aciertos: <b id="hits">0</b> · Fallos: <b id="errs">0</b></span><span>${DIFFS[lv].i} ${DIFFS[lv].n}</span></div>
+    <div class="clash" id="clash" style="--p:.5; --foe:${w.color}">
+      <div class="fighter me">${save.hero != null ? `<span class="portrait">${heroSVG(save.hero)}</span>` : facePic(FACES.hilda, 'Tú')}<b>${esc(save.name || 'Tú')}</b></div>
+      <div class="fighter foe">${facePic(FACES[w.face], w.name)}<b>${w.name}</b></div>
+      <div class="beam mine"></div><div class="beam theirs"></div>
+      <div class="clash-ball" id="ball"></div>
+      <div class="shout" id="shout" aria-live="polite"></div>
+      <div class="start-overlay" id="ov"><div style="display:grid;gap:8px;justify-items:center">
+        <p class="lead" style="margin:0;color:var(--ink)">«${w.say}»</p><button class="btn gold" id="go">¡Arde, cosmos!</button></div></div>
     </div>
-    <div class="battle">
-      <div class="panel" id="duel">
-        <div class="duel-hud"><span class="flames" id="lives" aria-label="Vidas"></span><span>${DIFFS[lv].i} ${DIFFS[lv].n}</span></div>
-        <div class="question"><div class="q-text" id="q"></div></div>
-        <div class="bar ice" id="icebar"><i id="ice" style="width:100%"></i></div>
-        <p class="time-label">Tiempo antes de que llegue la ventisca</p>
-        <p class="feedback" id="fb" aria-live="polite"></p>
-        <div id="explain-slot"></div>
-      </div>
-      <div class="panel">${keypadHTML()}<p class="hint-note">También puedes usar el teclado y pulsar Enter.</p></div>
+    <div class="panel clash-panel">
+      <div class="combo"><span>Séptimo sentido</span><div class="bar"><i id="combo"></i></div></div>
+      <div class="question"><div class="q-text" id="q"></div></div>
+      <p class="feedback" id="fb" aria-live="polite"></p>
+      <div class="options" id="opts"><p class="lead" style="grid-column:1/-1;text-align:center;margin:0 auto">Cada acierto empuja tu rayo contra el de ${w.name}; cuanto más rápido respondas, más fuerte. Con ${COMBO_FULL} aciertos seguidos lanzas tu ataque especial. ¡No dejes que su rayo llegue hasta ti!</p></div>
+      <p class="hint-note">Con teclado: pulsa 1, 2, 3 o 4 para elegir.</p>
     </div>`, asgardScreen, '← Volver a Asgard');
-  const qEl = $('#q', s), fb = $('#fb', s), slot = $('#explain-slot', s), ice = $('#ice', s), iceBar = $('#icebar', s), duel = $('#duel', s);
-  fitPlay($('.battle', s));
-  const cur = () => st.queue[0];
-  function drawQ() {
-    const [a, b] = cur();
-    qEl.innerHTML = `${a} × ${b} <span class="eq">=</span> <span class="answer-box ${st.entry ? '' : 'empty'}">${st.entry}</span>`;
+  const area = $('#clash', s), qEl = $('#q', s), fb = $('#fb', s), opts = $('#opts', s), shout = $('#shout', s), ball = $('#ball', s);
+  fitPlay($('.clash-panel', s), $('.hud', s));
+  function draw() {
+    area.style.setProperty('--p', st.p.toFixed(4));
+    area.classList.toggle('danger', st.p < 0.28);
+    area.classList.toggle('winning', st.p > 0.72);
+    $('#combo', s).style.width = (st.combo / COMBO_FULL * 100) + '%';
   }
-  function drawHP() {
-    $('#hp').style.width = ((total - st.done) / total * 100) + '%';
-    $('#hp-label').textContent = `Le quedan ${total - st.done} golpes`;
-    $('#lives').textContent = '♥'.repeat(st.lives) + '♡'.repeat(3 - st.lives);
+  function say(text, cls) {
+    shout.className = 'shout ' + cls; shout.textContent = text;
+    void shout.offsetWidth; shout.classList.add('on');
   }
-  function tick(ts) {
+  function nextQ() {
+    if (!st.bag.length) st.bag = stageQueue(w.t, 10);
+    st.q = st.bag.shift(); st.asked = performance.now();
+    const [a, b] = st.q;
+    qEl.innerHTML = `${a} × ${b} <span class="eq">=</span> <span class="answer-box empty"></span>`;
+    opts.innerHTML = options(a, b).map(v => `<button class="opt" data-v="${v}">${v}</button>`).join('');
+    opts.querySelectorAll('.opt').forEach(o => o.onclick = () => pick(o));
+  }
+  function pick(o) {
+    if (!st.running || st.lock) return;
+    const [a, b] = st.q, r = a * b, ok = +o.dataset.v === r;
+    rec(a, b, ok); st.lock = true;
+    opts.querySelectorAll('.opt').forEach(x => { x.disabled = true; if (+x.dataset.v === r) x.classList.add('right'); });
+    qEl.innerHTML = `${a} × ${b} <span class="eq">=</span> <span class="answer-box">${r}</span>`;
+    if (ok) {
+      const quick = Math.max(0, 1 - (performance.now() - st.asked) / 5000);
+      st.hits++; st.combo++; $('#hits', s).textContent = st.hits;
+      st.p += 0.035 + 0.025 * quick;
+      sfx.ok(); burst(ball, 10); addCosmo(10);
+      fb.className = 'feedback ok'; fb.textContent = quick > 0.6 ? '¡Rapidísimo!' : ['¡Tu cosmos arde!', '¡Muy bien!', '¡Golpe certero!'][rnd(3)];
+      area.classList.remove('push'); void area.offsetWidth; area.classList.add('push');
+      if (st.combo >= COMBO_FULL) {
+        st.combo = 0; st.p += 0.1;
+        say(move, 'mine'); sfx.win(); area.classList.add('special'); setTimeout(() => area.classList.remove('special'), 900);
+      }
+    } else {
+      st.errors++; st.combo = 0; $('#errs', s).textContent = st.errors;
+      st.p -= 0.06; sfx.bad();
+      o.classList.add('wrong');
+      fb.className = 'feedback bad'; fb.textContent = `¡${w.name} contraataca! ${a} × ${b} = ${r}`;
+      st.bag.splice(2, 0, st.q);
+    }
+    draw();
+    if (st.p >= 0.93) return win();
+    if (st.p <= 0.07) return lose();
+    setTimeout(() => { if (!st.running) return; st.lock = false; fb.textContent = ''; nextQ(); }, ok ? 450 : 1500);
+  }
+  function loop(ts) {
     if (!st.running) return;
     const dt = Math.min(0.05, (ts - (st.prev || ts)) / 1000); st.prev = ts;
-    if (!st.locked) {
-      st.t -= dt;
-      ice.style.width = Math.max(0, st.t / limit * 100) + '%';
-      iceBar.classList.toggle('low', st.t < limit * 0.3);
-      if (st.t <= 0) fail(true);
+    st.nextSpecial -= dt;
+    if (st.nextSpecial <= 0) {
+      st.nextSpecial = sp.every + rnd(4); st.surge = 1.6;
+      say(`${w.name}: ${w.move}`, 'theirs'); tone(180, .5, 'sawtooth', 0, .05);
+      area.classList.add('surge'); setTimeout(() => area.classList.remove('surge'), 1600);
     }
-    st.raf = requestAnimationFrame(tick);
+    const surge = st.surge > 0 ? 3.5 : 1; st.surge -= dt;
+    if (!st.lock) st.p -= sp.push * surge * dt;
+    draw();
+    if (st.p <= 0.07) return lose();
+    st.raf = requestAnimationFrame(loop);
   }
-  function newTurn() { st.t = limit; st.entry = ''; ice.style.width = '100%'; iceBar.classList.remove('low'); duel.classList.remove('frozen'); }
-  function begin() { st.started = true; st.locked = false; slot.innerHTML = ''; newTurn(); drawQ(); }
-  function onKey(k) {
-    if (!st.started) { if (k === 'ok') begin(); return; }
-    if (st.locked) { if (k === 'ok' && st.wrong) cont(); return; }
-    if (k === 'del') st.entry = st.entry.slice(0, -1);
-    else if (k === 'ok') { if (st.entry) submit(); return; }
-    else if (st.entry.length < 3) st.entry += k;
-    drawQ();
+  function start() {
+    $('#ov', s).hidden = true; st.running = true; st.prev = 0;
+    nextQ(); draw(); st.raf = requestAnimationFrame(loop);
   }
-  function submit() {
-    const [a, b] = cur();
-    if (+st.entry !== a * b) return fail(false);
-    rec(a, b, true); sfx.ok();
-    const pts = 10 + Math.round(5 * Math.max(0, st.t) / limit);
-    st.done++; st.queue.shift();
-    fb.className = 'feedback ok'; fb.textContent = st.t > limit * 0.6 ? '¡Rapidísimo! Tu cosmos arde.' : ['¡Golpe certero!', '¡Muy bien!', '¡Exacto!'][rnd(3)];
-    $('#guardian').classList.remove('hit'); void s.offsetWidth; $('#guardian').classList.add('hit');
-    burst(qEl, pts); addCosmo(pts); drawHP();
-    st.entry = '';
-    if (!st.queue.length) { st.locked = true; qEl.innerHTML = `${a} × ${b} <span class="eq">=</span> <span class="answer-box">${a * b}</span>`; return setTimeout(finish, 500); }
-    drawQ();
-    st.locked = true;
-    setTimeout(() => { if (!st.running) return; st.locked = false; fb.textContent = ''; newTurn(); drawQ(); }, 550);
-  }
-  function fail(timeout) {
-    const [a, b] = cur();
-    rec(a, b, false); sfx.bad(); st.lives--; drawHP();
-    st.locked = true; st.wrong = true;
-    if (timeout) duel.classList.add('frozen');
-    qEl.classList.remove('shake'); void qEl.offsetWidth; qEl.classList.add('shake');
-    qEl.innerHTML = `${a} × ${b} <span class="eq">=</span> <span class="answer-box">${a * b}</span>`;
-    fb.className = 'feedback bad'; fb.textContent = timeout ? '¡La ventisca te ha alcanzado!' : `¡${w.name} ha esquivado tu ataque!`;
-    if (st.lives <= 0) { st.running = false; keyHandler = null; return setTimeout(lose, 900); }
-    slot.innerHTML = `<div class="explain"><div><b>${a} × ${b} = ${a * b}</b></div><div>${explain(a, b)}</div>
-      <button class="btn gold" id="cont">Entendido, ¡sigo!</button></div>`;
-    $('#cont').onclick = cont; $('#cont').focus();
-  }
-  function cont() {
-    const q = st.queue.shift();
-    st.queue.splice(Math.min(3, st.queue.length), 0, q);
-    st.locked = false; st.wrong = false; slot.innerHTML = ''; fb.textContent = '';
-    newTurn(); drawQ();
-  }
+  function stop() { st.running = false; cancelAnimationFrame(st.raf); keyHandler = null; opts.querySelectorAll('.opt').forEach(x => x.disabled = true); }
   function lose() {
-    const [a, b] = cur();
-    showModal(`<p class="eyebrow">Duelo contra ${w.name}</p>${facePic(FACES[w.face], w.name)}
-      <h2>¡Te has congelado!</h2><p>La última era <b>${a} × ${b} = ${a * b}</b>. ${explain(a, b)}</p>
-      <p>${lv > 0 ? 'Prueba con la velocidad 🐢 Tranquilo para tener más tiempo.' : 'Cada intento te hace más fuerte. ¡Otra vez!'}</p>`,
-      [{ label: 'Salir', fn: () => go(asgardScreen) }, { label: 'Reintentar', primary: true, fn: () => go(asgardDuel, i) }]);
+    stop(); st.p = Math.max(0.04, st.p); draw(); area.classList.add('lost'); sfx.bad();
+    setTimeout(() => showModal(`<p class="eyebrow">Choque contra ${w.name}</p>${facePic(FACES[w.face], w.name)}
+      <h2>¡${w.name} te ha vencido!</h2><p>Has acertado ${st.hits}. ${lv > 0 ? 'Prueba con la velocidad 🐢 Tranquilo: su rayo empuja más despacio.' : 'Cada intento te hace más fuerte. ¡Otra vez!'}</p>`,
+      [{ label: 'Salir', fn: () => go(asgardScreen) }, { label: 'Reintentar', primary: true, fn: () => go(asgardDuel, i) }]), 700);
   }
-  function finish() {
-    st.running = false; keyHandler = null;
-    const stars = st.lives, first = !save.asgard[i];
+  function win() {
+    stop(); st.p = 0.97; draw(); area.classList.add('won');
+    say(move, 'mine');
+    const stars = st.errors === 0 ? 3 : st.errors <= 2 ? 2 : 1, first = !save.asgard[i];
     save.asgard[i] = Math.max(save.asgard[i], stars); persist();
     const bonus = 30 * stars + 10 * lv; addCosmo(bonus); sfx.win();
     const freed = first && save.asgard.every(Boolean);
-    showModal(`<p class="eyebrow">${w.name} vencido</p>
-      ${freed ? `<div class="duo">${facePic(FACES.hilda, 'Hilda de Polaris')}</div><h2>¡Hilda es libre!</h2>
+    setTimeout(() => showModal(`<p class="eyebrow">${w.name} vencido</p>
+      ${freed ? `${facePic(FACES.hilda, 'Hilda de Polaris')}<h2>¡Hilda es libre!</h2>
         <p>Has reunido los siete zafiros de Odín. El Anillo Nibelungo se rompe y Asgard vuelve a estar en paz.</p>`
-        : `${facePic(FACES[w.face], w.name)}<h2>${first ? '¡Zafiro de Odín de ' + w.star + '!' : '¡Duelo ganado!'}</h2>`}
+        : `${facePic(FACES[w.face], w.name)}<h2>${first ? '¡Zafiro de Odín de ' + w.star + '!' : '¡Choque ganado!'}</h2>`}
       <div class="big-stars">${[0, 1, 2].map(k => k < stars ? '★' : '<span class="off">★</span>').join('')}</div>
-      <p>${stars === 3 ? 'Sin perder ninguna vida. ¡Perfecto!' : 'Gana sin perder vidas para lograr 3 estrellas.'} Bonus: +${bonus} de cosmos.</p>`,
+      <p>${st.errors === 0 ? 'Sin ningún fallo. ¡Perfecto!' : `Con ${st.errors} ${st.errors === 1 ? 'fallo' : 'fallos'}. ${stars < 3 ? 'Sin fallos ganas 3 estrellas.' : ''}`} Bonus: +${bonus} de cosmos.</p>`,
       [{ label: 'Repetir', fn: () => go(asgardDuel, i) },
-       i < WARRIORS.length - 1 ? { label: 'Siguiente guerrero →', primary: true, fn: () => go(asgardDuel, i + 1) } : { label: 'Volver a Asgard', primary: true, fn: () => go(asgardScreen) }]);
+       i < WARRIORS.length - 1 ? { label: 'Siguiente guerrero →', primary: true, fn: () => go(asgardDuel, i + 1) } : { label: 'Volver a Asgard', primary: true, fn: () => go(asgardScreen) }]), 1100);
   }
-  bindKeypad(s, onKey);
+  keyHandler = k => {
+    if (!st.running) { if (k === 'ok' && !$('#ov', s).hidden) start(); return; }
+    const btns = opts.querySelectorAll('.opt');
+    if (+k >= 1 && +k <= 4 && btns[+k - 1]) pick(btns[+k - 1]);
+  };
+  $('#go', s).onclick = start;
   cleanup = () => { st.running = false; cancelAnimationFrame(st.raf); };
-  drawHP();
-  qEl.innerHTML = '<span class="eq">¿Preparada?</span>';
-  slot.innerHTML = `<div style="display:grid;gap:10px;justify-items:center"><p class="lead" style="margin:0;text-align:center">Tienes ${limit} segundos para cada respuesta y 3 vidas.</p><button class="btn gold" id="begin">¡A luchar!</button></div>`;
-  $('#begin', s).onclick = begin;
-  st.raf = requestAnimationFrame(tick);
+  draw();
 }
 
 /* ---------- Saga de Poseidón: romper los pilares antes de que suba el agua ---------- */
