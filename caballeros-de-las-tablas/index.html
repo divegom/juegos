@@ -323,6 +323,72 @@ body.has-scene #sanctuary { opacity: .3; }
 .sky-area::before { content: ""; position: absolute; inset: 0; background: var(--img-meteoros) center / cover no-repeat; opacity: .45; }
 .finale-pic { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; object-position: center 25%; border-radius: 12px; border: 1px solid var(--gold-deep); }
 
+/* Velocidad de los juegos rápidos */
+.diff { display: flex; justify-content: space-between; align-items: center; gap: 10px 16px; flex-wrap: wrap; padding: 14px 18px; }
+.diff h3 { font-size: 1.05rem; }
+.diff .lead { margin: 2px 0 0; font-size: .9rem; }
+.diff .toggle button { padding: 10px 14px; }
+
+/* Asgard y Poseidón */
+.rival { position: relative; }
+.rival .portrait { width: 78px; height: 78px; }
+.house.ice::before { background: #8fd3ff; }
+.house.sea::before { background: #3ab0e0; }
+.house.ice .portrait { border-color: #bfe9ff; }
+.house.sea .portrait { border-color: var(--cosmo); }
+.saga-top { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 16px; align-items: center; }
+.dipper { width: 100%; height: auto; display: block; }
+.dipper line { stroke: #3a4a8a; stroke-width: 1.2; stroke-linecap: round; }
+.dipper .pole { stroke: #3a4a8a; stroke-dasharray: 2 3; }
+.dipper circle { fill: #4a538f; }
+.dipper circle.on { fill: #9fe0ff; filter: drop-shadow(0 0 4px #7fd8ff); }
+.dipper circle.polar { fill: #6a74b0; }
+.dipper circle.polar.on { fill: #fff; filter: drop-shadow(0 0 6px #fff); }
+.dipper text { fill: var(--muted); font-size: 6px; font-family: var(--font-body); font-weight: 800; }
+.gems { display: flex; gap: 6px; flex-wrap: wrap; font-size: 1.3rem; color: #3b437e; }
+.gems .on { color: #5ab8ff; text-shadow: 0 0 10px #5ab8ff; }
+.duel-hud { display: flex; justify-content: space-between; gap: 10px; font-weight: 900; font-variant-numeric: tabular-nums; }
+.flames { color: var(--fire); letter-spacing: 3px; }
+.bar.ice { margin-top: 6px; }
+.bar.ice i { background: linear-gradient(90deg, #8fd3ff, #ffffff); transition: none; }
+.bar.ice.low i { background: linear-gradient(90deg, var(--bad), #ffc2cc); }
+.time-label { font-size: .8rem; color: var(--muted); text-align: center; margin-top: 4px; }
+.frozen .q-text { color: #bfe9ff; text-shadow: 0 0 14px #7fd8ff; }
+.tide { position: relative; isolation: isolate; height: clamp(330px, 100svh - 240px, 480px); border-radius: var(--r); border: 1px solid var(--line); overflow: hidden; display: grid; grid-template-columns: 76px minmax(0, 1fr); background: linear-gradient(180deg, #06183a, #0b2c5a); }
+.tide::before { content: ""; position: absolute; inset: 0; z-index: -2; background: var(--img-poseidon) center / cover no-repeat; opacity: .3; }
+.water { position: absolute; left: 0; right: 0; bottom: 0; height: 20%; z-index: -1; background: linear-gradient(180deg, rgba(110, 210, 255, .55), rgba(16, 70, 160, .85)); border-top: 3px solid rgba(210, 245, 255, .85); box-shadow: 0 -6px 24px rgba(127, 216, 255, .45); }
+.water.danger { border-top-color: var(--bad); box-shadow: 0 -6px 24px rgba(255, 111, 134, .55); }
+.pillar-col { padding: 12px 6px 12px 12px; display: grid; }
+.pillar { width: 100%; height: 100%; }
+.pillar .ck { stroke: #1a0f30; stroke-width: 2.2; fill: none; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+.pillar .ck.on { opacity: 1; }
+.pillar.broken { animation: topple .8s ease forwards; transform-origin: 50% 100%; }
+@keyframes topple { to { transform: rotate(14deg) translateY(10%); opacity: .25; } }
+.tide-main { display: grid; grid-template-rows: auto auto 1fr; gap: 6px; padding: 12px 12px 14px 6px; min-width: 0; }
+.tide-q { text-align: center; font-family: var(--font-display); font-weight: 800; font-size: clamp(2rem, 7vw, 3rem); line-height: 1.1; text-shadow: 0 2px 12px #000; font-variant-numeric: tabular-nums; }
+.tide-fb { min-height: 1.4em; text-align: center; font-weight: 900; text-shadow: 0 1px 6px #000; }
+.tide-fb.ok { color: var(--ok); }
+.tide-fb.bad { color: #ffb3c0; }
+.orbs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; align-content: center; justify-items: center; }
+.orb { width: min(100%, 104px); aspect-ratio: 1; border-radius: 50%; border: 2px solid rgba(210, 245, 255, .75); background: radial-gradient(circle at 32% 28%, rgba(255, 255, 255, .9), rgba(130, 215, 255, .5) 28%, rgba(25, 85, 170, .7) 78%); color: #fff; font-weight: 900; font-size: clamp(1.3rem, 4.8vw, 1.9rem); text-shadow: 0 1px 5px #02203f; font-variant-numeric: tabular-nums; animation: bob 3s ease-in-out infinite; }
+.orb:nth-child(2n) { animation-delay: -1.1s; }
+.orb:nth-child(3n) { animation-delay: -2s; }
+.orb:hover:not(:disabled) { border-color: #fff; }
+.orb:disabled { cursor: default; }
+.orb.right { border-color: var(--ok); box-shadow: 0 0 20px var(--ok); }
+.orb.wrong { border-color: var(--bad); box-shadow: 0 0 20px var(--bad); }
+.orb.pop { animation: pop .3s ease forwards; }
+@keyframes bob { 50% { transform: translateY(-6px); } }
+@keyframes pop { to { transform: scale(1.4); opacity: 0; } }
+.tide .start-overlay { z-index: 2; }
+.thetis { display: flex; gap: 10px; align-items: center; }
+.thetis .portrait { width: 56px; height: 56px; flex: none; border-color: var(--cosmo); }
+#m-asgard { --pic: var(--img-asgard); }
+#m-poseidon { --pic: var(--img-poseidon); }
+.modal-card .portrait { width: 120px; height: 120px; margin: 0 auto; }
+.modal-card .portrait .knight.photo { width: 100%; height: 100%; border: 0; }
+.modal-card .tall { width: auto; height: 220px; margin: 0 auto; border: 0; border-radius: 12px; background: #fff; }
+
 @media (max-width: 760px) {
   .battle, .meteor-layout { grid-template-columns: 1fr; }
   .meteor-input { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); align-items: center; }
@@ -357,6 +423,12 @@ body.has-scene #sanctuary { opacity: .3; }
   #sanctuary { height: 34vh; }
   .banner { aspect-ratio: 16 / 7; }
   .meander { margin-bottom: 8px; }
+  .saga-top { grid-template-columns: 120px minmax(0, 1fr); gap: 12px; padding: 14px; }
+  .tide { grid-template-columns: 56px minmax(0, 1fr); height: clamp(320px, 100svh - 200px, 460px); }
+  .pillar-col { padding: 10px 2px 10px 8px; }
+  .rival .portrait { width: 64px; height: 64px; }
+  .diff { padding: 12px 14px; }
+  .diff .toggle button { padding: 9px 10px; font-size: .92rem; }
 }
 /* Pantallas táctiles: no hay teclado físico, sobra la nota */
 @media (hover: none) and (pointer: coarse) {
@@ -381,6 +453,9 @@ body.has-scene #sanctuary { opacity: .3; }
   .hero { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
   .modes, .extras { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .houses { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .tide { height: clamp(220px, 100svh - 70px, 440px); }
+  .orbs { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .orb { width: min(100%, 80px); }
 }
 @media (max-width: 440px) {
   .houses { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -616,9 +691,15 @@ const ATHENA_TIPS = [
 
 /* ---------- Guardado ---------- */
 const KEY = 'caballeros-tablas-v1';
-const DEF = () => ({ name: '', cosmo: 0, houses: Array(12).fill(0), bronze: 0, hero: null, facts: {}, sound: true, bestMeteor: 0 });
+const DEF = () => ({ name: '', cosmo: 0, houses: Array(12).fill(0), bronze: 0, hero: null, facts: {}, sound: true, bestMeteor: 0,
+  diff: 1, records: {}, asgard: Array(7).fill(0), poseidon: Array(8).fill(0) });
 let save = DEF();
 try { const raw = localStorage.getItem(KEY); if (raw) save = Object.assign(DEF(), JSON.parse(raw)); } catch (e) {}
+// Partidas guardadas antes de la v5: el récord de meteoros pasa a ser el de velocidad Normal
+const fit = (a, n) => Array.from({ length: n }, (_, i) => +(Array.isArray(a) && a[i]) || 0);
+save.asgard = fit(save.asgard, 7); save.poseidon = fit(save.poseidon, 8);
+if (!save.records || typeof save.records !== 'object') save.records = {};
+if (save.bestMeteor > (save.records['meteor-1'] || 0)) save.records['meteor-1'] = save.bestMeteor;
 const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(save)); } catch (e) {} };
 
 const factKey = (a, b) => Math.min(a, b) + 'x' + Math.max(a, b);
@@ -861,11 +942,13 @@ function home() {
     <div class="modes">
       <button class="mode" id="m-houses"><span class="portrait art">${knightSVG(Math.min(conquered, 11))}</span><span><h3>Las Doce Casas</h3><p>Vence a cada guardián con su tabla. ${conquered}/12 conquistadas.</p></span></button>
       <button class="mode" id="m-train">${constSVG(BRONZE[5], 'cosmo').replace('class="const', 'class="art const')}<span><h3>Entrenamiento</h3><p>Practica una tabla sin prisa, con pistas de estrellas.</p></span></button>
-      <button class="mode" id="m-meteor">${constSVG(BRONZE[0], 'lit').replace('class="const', 'class="art const')}<span><h3>Lluvia de meteoros</h3><p>Destruye los meteoros escribiendo el resultado. Récord: ${save.bestMeteor}.</p></span></button>
+      <button class="mode" id="m-meteor">${constSVG(BRONZE[0], 'lit').replace('class="const', 'class="art const')}<span><h3>Lluvia de meteoros</h3><p>Destruye los meteoros escribiendo el resultado. Récord: ${meteorBest()}.</p></span></button>
       <button class="mode" id="m-memory">${constSVG(ZODIAC[2], 'cosmo').replace('class="const', 'class="art const')}<span><h3>Constelaciones gemelas</h3><p>Juego de memoria: une cada operación con su resultado.</p></span></button>
+      <button class="mode" id="m-asgard"><span class="portrait art"><img class="knight photo" src="${FACES.hilda}" alt="Hilda de Polaris"></span><span><h3>Saga de Asgard</h3><p>Duelos contrarreloj contra los Dioses Guerreros. ${save.asgard.filter(Boolean).length}/7 zafiros.</p></span></button>
+      <button class="mode" id="m-poseidon"><span class="portrait art"><img class="knight photo" src="${FACES.poseidon}" alt="Poseidón"></span><span><h3>Saga de Poseidón</h3><p>Rompe los pilares antes de que suba el agua. ${save.poseidon.filter(Boolean).length}/8 pilares.</p></span></button>
     </div>
     <div class="extras">
-      <button class="extra" id="m-coll">Mi colección de armaduras <span>${conquered + save.bronze}/18 →</span></button>
+      <button class="extra" id="m-coll">Mi colección de armaduras <span>${conquered + save.bronze + save.asgard.filter(Boolean).length + save.poseidon.filter(Boolean).length}/33 →</span></button>
       <button class="extra" id="m-map">Mapa de mis tablas <span>Qué sé y qué me cuesta →</span></button>
     </div>
   </section>`;
@@ -873,6 +956,8 @@ function home() {
   $('#m-train').onclick = () => go(trainSetup);
   $('#m-meteor').onclick = () => go(meteorSetup);
   $('#m-memory').onclick = () => go(memorySetup);
+  $('#m-asgard').onclick = () => go(asgardScreen);
+  $('#m-poseidon').onclick = () => go(poseidonScreen);
   $('#m-coll').onclick = () => go(collection);
   $('#m-map').onclick = () => go(mapScreen);
   if ($('#m-hero')) { $('#m-hero').onclick = () => go(chooseHero); $('#m-hero2').onclick = () => go(chooseHero); }
@@ -1046,11 +1131,12 @@ function trainSetup() {
   $('#ord2').onclick = () => { trainOrdered = false; go(trainSetup); };
   bindPicker(s, set => go(train, set));
 }
-function options(a, b) {
+function options(a, b, n = 4) {
   const r = a * b, set = new Set([r]);
   const cands = shuffle([a * (b + 1), a * (b - 1), (a + 1) * b, (a - 1) * b, r + 1, r - 1, r + 2, r + 10, r - 10]);
-  for (const c of cands) { if (set.size >= 4) break; if (c > 0 && c !== r) set.add(c); }
-  let x = r + 3; while (set.size < 4) set.add(x++);
+  if (n > 4) cands.push(...shuffle([a * (b + 2), (a + 2) * b, r - 2, a + b]));
+  for (const c of cands) { if (set.size >= n) break; if (c > 0 && c !== r) set.add(c); }
+  let x = r + 3; while (set.size < n) set.add(x++);
   return shuffle([...set]);
 }
 function train(set) {
@@ -1111,11 +1197,22 @@ function train(set) {
 function meteorSetup() {
   const s = screen(`<div><p class="eyebrow">Lluvia de meteoros</p><h2>Defiende el Santuario</h2>
     <p class="lead">Caen meteoros con operaciones. Escribe el resultado y pulsa Enter para destruirlos antes de que toquen el suelo. Tienes 3 vidas, y cada vez caen más rápido.</p></div>
+    ${diffHTML()}
+    <p class="lead" id="rec" style="margin:0">${recordText()}</p>
     <div class="panel">${pickerHTML()}</div>`);
+  bindDiff(s, () => { $('#rec', s).textContent = recordText(); });
   bindPicker(s, set => go(meteorGame, set));
 }
+const METEOR_SPEED = [
+  { fall: 18, minFall: 9, accel: 0.12, every: 4.6, minEvery: 2.6, max: 4 },
+  { fall: 12, minFall: 5, accel: 0.18, every: 3.2, minEvery: 1.4, max: 5 },
+  { fall: 9, minFall: 3.6, accel: 0.2, every: 2.4, minEvery: 1, max: 6 },
+];
+const meteorBest = () => save.records['meteor-' + diff()] || 0;
+const recordText = () => `Récord en velocidad ${DIFFS[diff()].n}: ${meteorBest()} puntos.`;
 function meteorGame(set) {
-  const s = screen(`<div class="hud"><span>${setLabel(set)}</span><span>Puntos: <b id="score">0</b> · Racha: <b id="combo">0</b></span><span class="lives" id="lives">♥♥♥</span></div>
+  const sp = METEOR_SPEED[diff()];
+  const s = screen(`<div class="hud"><span>${setLabel(set)} · ${DIFFS[diff()].i} ${DIFFS[diff()].n}</span><span>Puntos: <b id="score">0</b> · Racha: <b id="combo">0</b></span><span class="lives" id="lives">♥♥♥</span></div>
     <div class="meteor-layout"><div class="sky-area" id="area"><div class="ground"></div>
       <div class="start-overlay" id="ov"><div style="display:grid;gap:12px;justify-items:center"><h2>¿Preparada?</h2><p class="lead">Escribe el resultado y pulsa Enter.</p><button class="btn gold" id="go">¡Empezar!</button></div></div></div>
     <div class="panel meteor-input"><div class="big-entry" id="entry"></div><div>${keypadHTML()}</div></div></div>`, meteorSetup, '← Elegir otra tabla');
@@ -1129,14 +1226,14 @@ function meteorGame(set) {
     const el = document.createElement('div'); el.className = 'meteor'; el.textContent = `${a} × ${b}`;
     area.appendChild(el);
     const x = 8 + Math.random() * Math.max(10, W() - el.offsetWidth - 16);
-    const fall = Math.max(5, 12 - st.killed * 0.18);
+    const fall = Math.max(sp.minFall, sp.fall - st.killed * sp.accel);
     st.m.push({ a, b, el, x, y: -40, v: (H() + 40) / fall });
   }
   function loop(ts) {
     if (!st.running) return;
     const dt = Math.min(0.05, (ts - (st.prev || ts)) / 1000); st.prev = ts;
     st.spawnAt -= dt;
-    if (st.spawnAt <= 0 && st.m.length < 5) { spawn(); st.spawnAt = Math.max(1.4, 3.2 - st.killed * 0.06); }
+    if (st.spawnAt <= 0 && st.m.length < sp.max) { spawn(); st.spawnAt = Math.max(sp.minEvery, sp.every - st.killed * 0.06); }
     const floor = H() - 34 - 36;
     for (const m of st.m.slice()) {
       m.y += m.v * dt;
@@ -1177,12 +1274,12 @@ function meteorGame(set) {
   }
   function end() {
     st.running = false; cancelAnimationFrame(st.raf); keyHandler = null;
-    const best = st.score > save.bestMeteor;
-    if (best) { save.bestMeteor = st.score; persist(); }
+    const best = st.score > meteorBest();
+    if (best) { save.records['meteor-' + diff()] = st.score; save.bestMeteor = Math.max(save.bestMeteor, st.score); persist(); }
     if (st.score) addCosmo(st.score);
     sfx.win();
     showModal(`<p class="eyebrow">Fin de la lluvia</p><h2>${st.score} puntos</h2>
-      <p>Has destruido ${st.killed} ${st.killed === 1 ? 'meteoro' : 'meteoros'}. ${best ? '¡Nuevo récord!' : `Tu récord es ${save.bestMeteor}.`} Ganas +${st.score} de cosmos.</p>`,
+      <p>Has destruido ${st.killed} ${st.killed === 1 ? 'meteoro' : 'meteoros'}. ${best ? `¡Nuevo récord en velocidad ${DIFFS[diff()].n}!` : `Tu récord en velocidad ${DIFFS[diff()].n} es ${meteorBest()}.`} Ganas +${st.score} de cosmos.</p>`,
       [{ label: 'Salir', fn: () => go(home) }, { label: 'Jugar otra vez', primary: true, fn: () => go(meteorGame, set) }]);
   }
   bindKeypad(s, k => {
@@ -1254,17 +1351,360 @@ function memoryGame(set) {
   }
 }
 
+/* ---------- Velocidad de los juegos rápidos ---------- */
+const DIFFS = [
+  { n: 'Tranquilo', i: '🐢', d: 'Más tiempo para pensar. Ideal para empezar.' },
+  { n: 'Normal', i: '🛡️', d: 'La velocidad de siempre.' },
+  { n: 'Rápido', i: '⚡', d: 'Solo para caballeros veloces como la luz.' },
+];
+const diff = () => DIFFS[save.diff] ? save.diff : 1;
+function diffHTML() {
+  return `<div class="panel diff"><div><h3>Velocidad</h3><p class="lead">${DIFFS[diff()].d}</p></div>
+    <span class="toggle" role="group" aria-label="Velocidad">${DIFFS.map((d, i) => `<button data-diff="${i}" aria-pressed="${i === diff()}">${d.i} ${d.n}</button>`).join('')}</span></div>`;
+}
+function bindDiff(s, after) {
+  s.querySelectorAll('[data-diff]').forEach(b => b.onclick = () => {
+    save.diff = +b.dataset.diff; persist(); sfx.flip();
+    s.querySelectorAll('[data-diff]').forEach(x => x.setAttribute('aria-pressed', x === b));
+    $('.diff .lead', s).textContent = DIFFS[save.diff].d;
+    after && after();
+  });
+}
+
+/* Preguntas de una etapa: tablas = lista de tablas o 'all' */
+function stageQueue(tables, n) {
+  const p = tables === 'all' ? pool('all') : tables.flatMap(t => range(1, 10).map(k => [t, k]));
+  const out = [];
+  while (out.length < n) out.push(...shuffle(p).map(([a, b]) => Math.random() < .35 ? [b, a] : [a, b]));
+  return out.slice(0, n);
+}
+const tablesLabel = t => t === 'all' ? 'Todas las tablas' : (t.length > 1 ? 'Tablas del ' : 'Tabla del ') + t.join(', ').replace(/, (\d+)$/, ' y $1');
+const facePic = (src, label) => `<span class="portrait"><img class="knight photo" src="${src}" alt="${label}"></span>`;
+const FACES = {
+  thor: 'img/caras/thor.webp', fenrir: 'img/caras/fenrir.webp', hagen: 'img/caras/hagen.webp', mime: 'img/caras/mime.webp',
+  alberich: 'img/caras/alberich.webp', syd: 'img/caras/syd.webp', bud: 'img/caras/bud.webp', sigfried: 'img/caras/sigfried.webp', hilda: 'img/caras/hilda.webp',
+  baian: 'img/caras/baian.webp', io: 'img/caras/io.webp', isaac: 'img/caras/isaac.webp', krishna: 'img/caras/krishna.webp', kasa: 'img/caras/kasa.webp',
+  sorrento: 'img/caras/sorrento.webp', kanon: 'img/caras/kanon.webp', poseidon: 'img/caras/poseidon.webp', thetis: 'img/caras/thetis.webp',
+};
+
+/* ---------- Saga de Asgard: duelos contrarreloj ---------- */
+// Estrellas de la Osa Mayor (0 Dubhe … 6 Benetnasch) y la Polar (7)
+const DIPPER = { p: [[78, 26], [80, 50], [60, 56], [57, 36], [41, 40], [25, 42], [9, 56], [74, 6]], l: [[0, 1], [1, 2], [2, 3], [3, 0], [3, 4], [4, 5], [5, 6]] };
+const WARRIORS = [
+  { name: 'Thor', star: 'Phecda', s: 2, face: 'thor', t: [2, 3], say: 'Mi martillo Mjölnir es más pesado que una montaña.' },
+  { name: 'Fenrir', star: 'Alioth', s: 4, face: 'fenrir', t: [4, 5], say: 'Los lobos y yo cazamos en manada.' },
+  { name: 'Hagen', star: 'Merak', s: 1, face: 'hagen', t: [6], say: 'Mi fuego y mi hielo te detendrán.' },
+  { name: 'Mime', star: 'Benetnasch', s: 6, face: 'mime', t: [7], say: 'Escucha mi arpa... cada nota es una pregunta.' },
+  { name: 'Alberich', star: 'Megrez', s: 3, face: 'alberich', t: [8], say: 'Soy el más listo de Asgard. ¿Podrás conmigo?' },
+  { name: 'Syd y Bud', star: 'Mizar y Alcor', s: 5, face: 'syd', t: [9], say: 'Somos dos, como la estrella doble de Mizar y Alcor.' },
+  { name: 'Sigfried', star: 'Dubhe', s: 0, face: 'sigfried', t: 'all', say: 'Soy el más fuerte de los Dioses Guerreros.' },
+];
+const DUEL_TIME = [16, 10, 6];
+function dipperSVG(cls = '') {
+  const lit = WARRIORS.map((w, i) => save.asgard[i] > 0 ? w.s : -1), all = save.asgard.every(Boolean);
+  const [d, , , , , , , pol] = DIPPER.p;
+  return `<svg viewBox="0 0 100 70" class="dipper ${cls}" role="img" aria-label="La Osa Mayor: ${save.asgard.filter(Boolean).length} de 7 estrellas encendidas">
+    <line class="pole" x1="${d[0]}" y1="${d[1]}" x2="${pol[0]}" y2="${pol[1]}"/>
+    ${DIPPER.l.map(([a, b]) => `<line x1="${DIPPER.p[a][0]}" y1="${DIPPER.p[a][1]}" x2="${DIPPER.p[b][0]}" y2="${DIPPER.p[b][1]}"/>`).join('')}
+    ${DIPPER.p.slice(0, 7).map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="3" class="${lit.includes(i) ? 'on' : ''}"/>`).join('')}
+    <circle cx="${pol[0]}" cy="${pol[1]}" r="3.6" class="polar ${all ? 'on' : ''}"/><text x="${pol[0] + 6}" y="${pol[1] + 2}">Polaris</text>
+  </svg>`;
+}
+function gemsHTML() { return `<span class="gems" aria-hidden="true">${save.asgard.map(v => `<span class="${v ? 'on' : ''}">◆</span>`).join('')}</span>`; }
+function asgardScreen() {
+  const won = save.asgard.filter(Boolean).length, next = save.asgard.findIndex(v => !v);
+  const s = screen(`<div><p class="eyebrow">Saga de Asgard</p><h2>Los Dioses Guerreros</h2>
+    <p class="lead">Hilda de Polaris está bajo el hechizo del Anillo Nibelungo. Vence a los siete Dioses Guerreros y gana sus zafiros de Odín. ¡Cuidado! Cada pregunta tiene un tiempo antes de que la ventisca te congele.</p></div>
+    <div class="panel saga-top">${dipperSVG()}<div><h3>Zafiros de Odín: ${won}/7</h3>${gemsHTML()}
+      <p class="lead">Cada estrella de la Osa Mayor es un Dios Guerrero. ${won === 7 ? '¡Hilda es libre gracias a ti!' : 'Enciéndelas todas para liberar a Hilda.'}</p></div></div>
+    ${diffHTML()}
+    <div class="houses">${WARRIORS.map((w, i) => {
+      const open = i === 0 || save.asgard[i - 1] > 0;
+      return `<button class="house ice ${i === next && open ? 'next' : ''}" data-i="${i}" ${open ? '' : 'disabled'}>
+        <span class="num">${i + 1}</span>
+        <span class="portrait face"><img class="knight photo ${open ? '' : 'silhouette'}" src="${FACES[w.face]}" alt="${w.name}"></span>
+        <span class="hn">${w.name}</span><span class="ht">${w.star} · ${tablesLabel(w.t)}</span>
+        ${open ? starsHTML(save.asgard[i]) : '<span class="lock">Bloqueado</span>'}
+      </button>`;
+    }).join('')}</div>`);
+  bindDiff(s);
+  s.querySelectorAll('.house:not(:disabled)').forEach(b => b.onclick = () => go(asgardDuel, +b.dataset.i));
+}
+function asgardDuel(i) {
+  const w = WARRIORS[i], lv = diff(), limit = DUEL_TIME[lv], total = 8;
+  const st = { queue: stageQueue(w.t, total), done: 0, lives: 3, entry: '', locked: true, started: false, wrong: false, t: limit, prev: 0, raf: 0, running: true };
+  const s = screen(`<div class="panel guardian rival" id="guardian">
+      <div class="guardian-art">${constSVG(DIPPER, 'cosmo')}${facePic(FACES[w.face], w.name)}</div>
+      <div><p class="eyebrow">Estrella ${w.star} · ${tablesLabel(w.t)}</p><h2>${w.name}, Dios Guerrero</h2>
+        <p class="say">«${w.say}»</p>
+        <div class="bar hp"><i id="hp" style="width:100%"></i></div>
+        <div class="bar-label" id="hp-label"></div></div>
+    </div>
+    <div class="battle">
+      <div class="panel" id="duel">
+        <div class="duel-hud"><span class="flames" id="lives" aria-label="Vidas"></span><span>${DIFFS[lv].i} ${DIFFS[lv].n}</span></div>
+        <div class="question"><div class="q-text" id="q"></div></div>
+        <div class="bar ice" id="icebar"><i id="ice" style="width:100%"></i></div>
+        <p class="time-label">Tiempo antes de que llegue la ventisca</p>
+        <p class="feedback" id="fb" aria-live="polite"></p>
+        <div id="explain-slot"></div>
+      </div>
+      <div class="panel">${keypadHTML()}<p class="hint-note">También puedes usar el teclado y pulsar Enter.</p></div>
+    </div>`, asgardScreen, '← Volver a Asgard');
+  const qEl = $('#q', s), fb = $('#fb', s), slot = $('#explain-slot', s), ice = $('#ice', s), iceBar = $('#icebar', s), duel = $('#duel', s);
+  fitPlay($('.battle', s));
+  const cur = () => st.queue[0];
+  function drawQ() {
+    const [a, b] = cur();
+    qEl.innerHTML = `${a} × ${b} <span class="eq">=</span> <span class="answer-box ${st.entry ? '' : 'empty'}">${st.entry}</span>`;
+  }
+  function drawHP() {
+    $('#hp').style.width = ((total - st.done) / total * 100) + '%';
+    $('#hp-label').textContent = `Le quedan ${total - st.done} golpes`;
+    $('#lives').textContent = '♥'.repeat(st.lives) + '♡'.repeat(3 - st.lives);
+  }
+  function tick(ts) {
+    if (!st.running) return;
+    const dt = Math.min(0.05, (ts - (st.prev || ts)) / 1000); st.prev = ts;
+    if (!st.locked) {
+      st.t -= dt;
+      ice.style.width = Math.max(0, st.t / limit * 100) + '%';
+      iceBar.classList.toggle('low', st.t < limit * 0.3);
+      if (st.t <= 0) fail(true);
+    }
+    st.raf = requestAnimationFrame(tick);
+  }
+  function newTurn() { st.t = limit; st.entry = ''; ice.style.width = '100%'; iceBar.classList.remove('low'); duel.classList.remove('frozen'); }
+  function begin() { st.started = true; st.locked = false; slot.innerHTML = ''; newTurn(); drawQ(); }
+  function onKey(k) {
+    if (!st.started) { if (k === 'ok') begin(); return; }
+    if (st.locked) { if (k === 'ok' && st.wrong) cont(); return; }
+    if (k === 'del') st.entry = st.entry.slice(0, -1);
+    else if (k === 'ok') { if (st.entry) submit(); return; }
+    else if (st.entry.length < 3) st.entry += k;
+    drawQ();
+  }
+  function submit() {
+    const [a, b] = cur();
+    if (+st.entry !== a * b) return fail(false);
+    rec(a, b, true); sfx.ok();
+    const pts = 10 + Math.round(5 * Math.max(0, st.t) / limit);
+    st.done++; st.queue.shift();
+    fb.className = 'feedback ok'; fb.textContent = st.t > limit * 0.6 ? '¡Rapidísimo! Tu cosmos arde.' : ['¡Golpe certero!', '¡Muy bien!', '¡Exacto!'][rnd(3)];
+    $('#guardian').classList.remove('hit'); void s.offsetWidth; $('#guardian').classList.add('hit');
+    burst(qEl, pts); addCosmo(pts); drawHP();
+    st.entry = '';
+    if (!st.queue.length) { st.locked = true; qEl.innerHTML = `${a} × ${b} <span class="eq">=</span> <span class="answer-box">${a * b}</span>`; return setTimeout(finish, 500); }
+    drawQ();
+    st.locked = true;
+    setTimeout(() => { if (!st.running) return; st.locked = false; fb.textContent = ''; newTurn(); drawQ(); }, 550);
+  }
+  function fail(timeout) {
+    const [a, b] = cur();
+    rec(a, b, false); sfx.bad(); st.lives--; drawHP();
+    st.locked = true; st.wrong = true;
+    if (timeout) duel.classList.add('frozen');
+    qEl.classList.remove('shake'); void qEl.offsetWidth; qEl.classList.add('shake');
+    qEl.innerHTML = `${a} × ${b} <span class="eq">=</span> <span class="answer-box">${a * b}</span>`;
+    fb.className = 'feedback bad'; fb.textContent = timeout ? '¡La ventisca te ha alcanzado!' : `¡${w.name} ha esquivado tu ataque!`;
+    if (st.lives <= 0) { st.running = false; keyHandler = null; return setTimeout(lose, 900); }
+    slot.innerHTML = `<div class="explain"><div><b>${a} × ${b} = ${a * b}</b></div><div>${explain(a, b)}</div>
+      <button class="btn gold" id="cont">Entendido, ¡sigo!</button></div>`;
+    $('#cont').onclick = cont; $('#cont').focus();
+  }
+  function cont() {
+    const q = st.queue.shift();
+    st.queue.splice(Math.min(3, st.queue.length), 0, q);
+    st.locked = false; st.wrong = false; slot.innerHTML = ''; fb.textContent = '';
+    newTurn(); drawQ();
+  }
+  function lose() {
+    const [a, b] = cur();
+    showModal(`<p class="eyebrow">Duelo contra ${w.name}</p>${facePic(FACES[w.face], w.name)}
+      <h2>¡Te has congelado!</h2><p>La última era <b>${a} × ${b} = ${a * b}</b>. ${explain(a, b)}</p>
+      <p>${lv > 0 ? 'Prueba con la velocidad 🐢 Tranquilo para tener más tiempo.' : 'Cada intento te hace más fuerte. ¡Otra vez!'}</p>`,
+      [{ label: 'Salir', fn: () => go(asgardScreen) }, { label: 'Reintentar', primary: true, fn: () => go(asgardDuel, i) }]);
+  }
+  function finish() {
+    st.running = false; keyHandler = null;
+    const stars = st.lives, first = !save.asgard[i];
+    save.asgard[i] = Math.max(save.asgard[i], stars); persist();
+    const bonus = 30 * stars + 10 * lv; addCosmo(bonus); sfx.win();
+    const freed = first && save.asgard.every(Boolean);
+    showModal(`<p class="eyebrow">${w.name} vencido</p>
+      ${freed ? `<div class="duo">${facePic(FACES.hilda, 'Hilda de Polaris')}</div><h2>¡Hilda es libre!</h2>
+        <p>Has reunido los siete zafiros de Odín. El Anillo Nibelungo se rompe y Asgard vuelve a estar en paz.</p>`
+        : `${facePic(FACES[w.face], w.name)}<h2>${first ? '¡Zafiro de Odín de ' + w.star + '!' : '¡Duelo ganado!'}</h2>`}
+      <div class="big-stars">${[0, 1, 2].map(k => k < stars ? '★' : '<span class="off">★</span>').join('')}</div>
+      <p>${stars === 3 ? 'Sin perder ninguna vida. ¡Perfecto!' : 'Gana sin perder vidas para lograr 3 estrellas.'} Bonus: +${bonus} de cosmos.</p>`,
+      [{ label: 'Repetir', fn: () => go(asgardDuel, i) },
+       i < WARRIORS.length - 1 ? { label: 'Siguiente guerrero →', primary: true, fn: () => go(asgardDuel, i + 1) } : { label: 'Volver a Asgard', primary: true, fn: () => go(asgardScreen) }]);
+  }
+  bindKeypad(s, onKey);
+  cleanup = () => { st.running = false; cancelAnimationFrame(st.raf); };
+  drawHP();
+  qEl.innerHTML = '<span class="eq">¿Preparada?</span>';
+  slot.innerHTML = `<div style="display:grid;gap:10px;justify-items:center"><p class="lead" style="margin:0;text-align:center">Tienes ${limit} segundos para cada respuesta y 3 vidas.</p><button class="btn gold" id="begin">¡A luchar!</button></div>`;
+  $('#begin', s).onclick = begin;
+  st.raf = requestAnimationFrame(tick);
+}
+
+/* ---------- Saga de Poseidón: romper los pilares antes de que suba el agua ---------- */
+const GENERALS = [
+  { name: 'Baian', scale: 'Caballo Marino', pillar: 'Pacífico Norte', face: 'baian', t: [2, 5, 10], say: 'Mi muro de viento no deja pasar a nadie.' },
+  { name: 'Io', scale: 'Scylla', pillar: 'Pacífico Sur', face: 'io', t: [3, 4], say: 'Tengo seis bestias, ¡y cada una hace una pregunta!' },
+  { name: 'Isaac', scale: 'Kraken', pillar: 'Océano Ártico', face: 'isaac', t: [6], say: 'En el Ártico solo sobrevive quien piensa rápido.' },
+  { name: 'Krishna', scale: 'Chrysaor', pillar: 'Océano Índico', face: 'krishna', t: [7], say: 'Mi lanza dorada atraviesa cualquier duda.' },
+  { name: 'Kasa', scale: 'Lymnades', pillar: 'Océano Antártico', face: 'kasa', t: [8], say: 'Puedo cambiar de forma... ¡pero los números no cambian!' },
+  { name: 'Sorrento', scale: 'Sirena', pillar: 'Atlántico Sur', face: 'sorrento', t: [9], say: 'Mi flauta marca el ritmo. ¿Lo sigues?' },
+  { name: 'Kanon', scale: 'Dragón Marino', pillar: 'Atlántico Norte', face: 'kanon', t: [6, 7, 8, 9], say: 'Soy el general más astuto. Demuestra lo que sabes.' },
+  { name: 'Poseidón', scale: 'Emperador de los mares', pillar: 'Soporte Principal', face: 'poseidon', t: 'all', say: 'Inundaré la Tierra... a menos que rompas el Soporte Principal.' },
+];
+// Subida del agua en % por segundo, cuánto baja al acertar y cuánto sube al fallar
+const TIDE = [{ rise: 1.5, hit: 14, miss: 6 }, { rise: 2.6, hit: 12, miss: 8 }, { rise: 4, hit: 11, miss: 10 }];
+const PILLAR_HITS = 10;
+function pillarSVG(hits) {
+  const cracks = range(0, PILLAR_HITS - 1).map(k => {
+    const y = 34 + k * 15, x = k % 2 ? 26 : 14;
+    return `<path class="ck ${k < hits ? 'on' : ''}" d="M${x},${y} l${k % 2 ? -6 : 6},6 l${k % 2 ? 4 : -4},5 l${k % 2 ? -5 : 5},5"/>`;
+  }).join('');
+  return `<svg viewBox="0 0 40 200" preserveAspectRatio="none" class="pillar" id="pillar" aria-hidden="true">
+    <defs><linearGradient id="pl-g" x1="0" x2="1"><stop offset="0" stop-color="#c9d3ea"/><stop offset=".5" stop-color="#ffffff"/><stop offset="1" stop-color="#9aa6c8"/></linearGradient></defs>
+    <rect x="2" y="6" width="36" height="12" rx="2" fill="url(#pl-g)"/><rect x="0" y="0" width="40" height="8" rx="2" fill="#e8ecf8"/>
+    <rect x="6" y="18" width="28" height="164" fill="url(#pl-g)"/>
+    <path d="M13,20 V180 M20,20 V180 M27,20 V180" stroke="#9aa6c8" stroke-width="1"/>
+    <rect x="2" y="182" width="36" height="10" rx="2" fill="url(#pl-g)"/><rect x="0" y="191" width="40" height="9" rx="2" fill="#e8ecf8"/>
+    ${cracks}</svg>`;
+}
+function poseidonScreen() {
+  const won = save.poseidon.filter(Boolean).length, next = save.poseidon.findIndex(v => !v);
+  const s = screen(`<div><p class="eyebrow">Saga de Poseidón</p><h2>El Templo Submarino</h2>
+    <p class="lead">Poseidón quiere inundar la Tierra. Rompe los siete pilares de los océanos y el Soporte Principal tocando la burbuja con el resultado correcto, ¡antes de que suba el agua!</p></div>
+    <div class="panel thetis">${facePic(FACES.thetis, 'Tetis de Sirena')}<p class="bubble" style="flex:1"><b>Tetis dice:</b>${won === 8 ? '¡Has derrotado a Poseidón! Atenea está a salvo.' : `Cada pilar lo protege un General Marino. Llevas ${won} de 8 pilares.`}</p></div>
+    ${diffHTML()}
+    <div class="houses">${GENERALS.map((g, i) => {
+      const open = i === 0 || save.poseidon[i - 1] > 0;
+      return `<button class="house sea ${i === next && open ? 'next' : ''}" data-i="${i}" ${open ? '' : 'disabled'}>
+        <span class="num">${i + 1}</span>
+        <span class="portrait face"><img class="knight photo ${open ? '' : 'silhouette'}" src="${FACES[g.face]}" alt="${g.name}"></span>
+        <span class="hn">${g.name}</span><span class="ht">${g.pillar} · ${tablesLabel(g.t)}</span>
+        ${open ? starsHTML(save.poseidon[i]) : '<span class="lock">Bloqueado</span>'}
+      </button>`;
+    }).join('')}</div>`);
+  bindDiff(s);
+  s.querySelectorAll('.house:not(:disabled)').forEach(b => b.onclick = () => go(pillarGame, +b.dataset.i));
+}
+function pillarGame(i) {
+  const g = GENERALS[i], lv = diff(), sp = TIDE[lv];
+  const st = { level: 20, hits: 0, errors: 0, q: null, bag: [], lock: false, running: false, prev: 0, raf: 0 };
+  const s = screen(`<div class="hud"><span>Pilar del ${g.pillar}</span><span>Golpes: <b id="hits">0</b>/${PILLAR_HITS} · Fallos: <b id="errs">0</b></span><span>${DIFFS[lv].i} ${DIFFS[lv].n}</span></div>
+    <div class="tide" id="tide">
+      <div class="pillar-col" id="pcol">${pillarSVG(0)}</div>
+      <div class="tide-main"><div class="tide-q" id="q"></div><p class="tide-fb" id="fb" aria-live="polite"></p><div class="orbs" id="orbs"></div></div>
+      <div class="water" id="water"></div>
+      <div class="start-overlay" id="ov"><div style="display:grid;gap:12px;justify-items:center;max-width:360px">
+        ${facePic(FACES[g.face], g.name)}<h2>${g.name} de ${g.scale}</h2><p class="lead">«${g.say}»</p>
+        <p class="lead">Toca la burbuja con el resultado. Cada acierto golpea el pilar y baja el agua.</p>
+        <button class="btn gold" id="go">¡Empezar!</button></div></div>
+    </div>
+    <p class="hint-note">Con teclado: pulsa del 1 al 6 para elegir burbuja (de izquierda a derecha).</p>`, poseidonScreen, '← Volver al Templo');
+  const water = $('#water', s), qEl = $('#q', s), fb = $('#fb', s), orbs = $('#orbs', s);
+  fitPlay($('#tide', s), $('.hud', s));
+  function nextQ() {
+    if (!st.bag.length) st.bag = stageQueue(g.t, 10);
+    st.q = st.bag.shift();
+    const [a, b] = st.q;
+    qEl.textContent = `${a} × ${b}`;
+    orbs.innerHTML = options(a, b, 6).map(v => `<button class="orb" data-v="${v}">${v}</button>`).join('');
+    orbs.querySelectorAll('.orb').forEach(o => o.onclick = () => pick(o));
+  }
+  function drawWater() {
+    water.style.height = Math.min(100, st.level) + '%';
+    water.classList.toggle('danger', st.level > 75);
+  }
+  function pick(o) {
+    if (!st.running || st.lock) return;
+    const [a, b] = st.q, r = a * b, ok = +o.dataset.v === r;
+    rec(a, b, ok);
+    if (ok) {
+      sfx.boom(); st.hits++; st.level = Math.max(0, st.level - sp.hit);
+      o.classList.add('pop'); burst(o, 10); addCosmo(10);
+      fb.className = 'tide-fb ok'; fb.textContent = ['¡Crack! El pilar se agrieta.', '¡Muy bien!', '¡Golpe certero!'][rnd(3)];
+      $('#pcol', s).innerHTML = pillarSVG(st.hits);
+      $('#hits', s).textContent = st.hits; drawWater();
+      if (st.hits >= PILLAR_HITS) return win();
+      st.lock = true; setTimeout(() => { st.lock = false; if (st.running) nextQ(); }, 300);
+    } else {
+      sfx.bad(); st.errors++; st.level += sp.miss;
+      $('#errs', s).textContent = st.errors;
+      o.classList.add('wrong');
+      orbs.querySelectorAll('.orb').forEach(x => { x.disabled = true; if (+x.dataset.v === r) x.classList.add('right'); });
+      fb.className = 'tide-fb bad'; fb.textContent = `${a} × ${b} = ${r}`;
+      st.bag.splice(2, 0, st.q);
+      drawWater();
+      st.lock = true; setTimeout(() => { st.lock = false; if (st.running) { fb.textContent = ''; nextQ(); } }, 1300);
+    }
+  }
+  function loop(ts) {
+    if (!st.running) return;
+    const dt = Math.min(0.05, (ts - (st.prev || ts)) / 1000); st.prev = ts;
+    if (!st.lock) st.level += sp.rise * dt;
+    drawWater();
+    if (st.level >= 100) return lose();
+    st.raf = requestAnimationFrame(loop);
+  }
+  function start() {
+    $('#ov', s).hidden = true; st.running = true; st.prev = 0;
+    nextQ(); drawWater(); st.raf = requestAnimationFrame(loop);
+  }
+  function stop() { st.running = false; cancelAnimationFrame(st.raf); keyHandler = null; }
+  function lose() {
+    stop(); sfx.bad();
+    showModal(`<p class="eyebrow">Pilar del ${g.pillar}</p>${facePic(FACES[g.face], g.name)}<h2>¡El agua lo ha inundado todo!</h2>
+      <p>Has dado ${st.hits} de ${PILLAR_HITS} golpes al pilar. ${lv > 0 ? 'Prueba con la velocidad 🐢 Tranquilo: el agua sube más despacio.' : '¡Inténtalo otra vez, casi lo tienes!'}</p>`,
+      [{ label: 'Salir', fn: () => go(poseidonScreen) }, { label: 'Reintentar', primary: true, fn: () => go(pillarGame, i) }]);
+  }
+  function win() {
+    stop();
+    $('#pillar', s).classList.add('broken');
+    const stars = st.errors === 0 ? 3 : st.errors <= 2 ? 2 : 1, first = !save.poseidon[i];
+    save.poseidon[i] = Math.max(save.poseidon[i], stars); persist();
+    const bonus = 30 * stars + 10 * lv; addCosmo(bonus); sfx.win();
+    const final = i === GENERALS.length - 1;
+    setTimeout(() => showModal(`<p class="eyebrow">${final ? 'Soporte Principal derribado' : 'Pilar del ' + g.pillar + ' derribado'}</p>
+      ${final ? `<img class="tall" src="${IMG.poseidonFull}" alt="Poseidón con su tridente"><h2>¡Has vencido a Poseidón!</h2>
+        <p>El Soporte Principal se derrumba, las aguas vuelven a su sitio y Atenea queda a salvo. ¡Eres una leyenda de los siete mares!</p>`
+        : `${facePic(FACES[g.face], g.name)}<h2>${first ? '¡Has vencido a ' + g.name + '!' : '¡Pilar derribado!'}</h2>`}
+      <div class="big-stars">${[0, 1, 2].map(k => k < stars ? '★' : '<span class="off">★</span>').join('')}</div>
+      <p>${st.errors === 0 ? 'Sin ningún fallo. ¡Perfecto!' : `Con ${st.errors} ${st.errors === 1 ? 'fallo' : 'fallos'}. ${stars < 3 ? 'Sin fallos ganas 3 estrellas.' : ''}`} Bonus: +${bonus} de cosmos.</p>`,
+      [{ label: 'Repetir', fn: () => go(pillarGame, i) },
+       !final ? { label: 'Siguiente pilar →', primary: true, fn: () => go(pillarGame, i + 1) } : { label: 'Volver al Templo', primary: true, fn: () => go(poseidonScreen) }]), 700);
+  }
+  keyHandler = k => {
+    if (!st.running) { if (k === 'ok' && !$('#ov', s).hidden) start(); return; }
+    const btns = orbs.querySelectorAll('.orb');
+    if (+k >= 1 && +k <= 6 && btns[+k - 1]) pick(btns[+k - 1]);
+  };
+  $('#go', s).onclick = start;
+  cleanup = () => { st.running = false; cancelAnimationFrame(st.raf); };
+  drawWater();
+}
+
 /* ---------- Colección ---------- */
 function collection() {
   const ri = rankOf(save.cosmo);
   screen(`<div><p class="eyebrow">Mi colección</p><h2>Armaduras conseguidas</h2>
-    <p class="lead">Las armaduras de oro se ganan conquistando las Doce Casas. Las constelaciones de bronce, completando tableros de Constelaciones gemelas.</p></div>
+    <p class="lead">Las armaduras de oro se ganan conquistando las Doce Casas. Las constelaciones de bronce, completando tableros de Constelaciones gemelas. Los zafiros de Odín, venciendo a los Dioses Guerreros, y los pilares, en el Templo de Poseidón.</p></div>
     <div class="panel" style="display:grid;gap:12px"><h3>Rango de cosmos</h3>
       <div class="ranks">${RANKS.map((r, i) => `<div class="rank ${i <= ri ? 'have' : ''}"><b>${r.n}</b>${r.min} ✦</div>`).join('')}</div></div>
     <div style="display:grid;gap:12px"><h3>Armaduras de oro</h3>
       <div class="collection">${SIGNS.map((h, i) => `<div class="cloth ${save.houses[i] ? 'won' : 'locked'}"><span class="portrait">${knightSVG(i, save.houses[i] ? '' : 'silhouette')}</span><b>${h.name}</b><span>${save.houses[i] ? starsHTML(save.houses[i]) : h.sub}</span></div>`).join('')}</div></div>
     <div style="display:grid;gap:12px"><h3>Constelaciones de bronce</h3>
-      <div class="collection">${BRONZE.map((c, i) => `<div class="cloth ${i < save.bronze ? 'won' : 'locked'}">${constSVG(c, i < save.bronze ? 'cosmo' : 'dim')}<b>${c.name}</b><span>${i < save.bronze ? 'Conseguida' : 'Por descubrir'}</span></div>`).join('')}</div></div>`);
+      <div class="collection">${BRONZE.map((c, i) => `<div class="cloth ${i < save.bronze ? 'won' : 'locked'}">${constSVG(c, i < save.bronze ? 'cosmo' : 'dim')}<b>${c.name}</b><span>${i < save.bronze ? 'Conseguida' : 'Por descubrir'}</span></div>`).join('')}</div></div>
+    <div style="display:grid;gap:12px"><h3>Zafiros de Odín (Asgard)</h3>
+      <div class="collection">${WARRIORS.map((w, i) => `<div class="cloth ${save.asgard[i] ? 'won' : 'locked'}"><span class="portrait"><img class="knight photo ${save.asgard[i] ? '' : 'silhouette'}" src="${FACES[w.face]}" alt="${w.name}"></span><b>${w.name}</b><span>${save.asgard[i] ? starsHTML(save.asgard[i]) : w.star}</span></div>`).join('')}</div></div>
+    <div style="display:grid;gap:12px"><h3>Pilares de Poseidón</h3>
+      <div class="collection">${GENERALS.map((g, i) => `<div class="cloth ${save.poseidon[i] ? 'won' : 'locked'}"><span class="portrait"><img class="knight photo ${save.poseidon[i] ? '' : 'silhouette'}" src="${FACES[g.face]}" alt="${g.name}"></span><b>${g.name}</b><span>${save.poseidon[i] ? starsHTML(save.poseidon[i]) : g.pillar}</span></div>`).join('')}</div></div>`);
 }
 
 /* ---------- Mapa de tablas ---------- */
@@ -1320,10 +1760,14 @@ const IMG = {
   meteoros: 'img/meteoros.webp',
   memoria: 'img/memoria.webp',
   armaduras: 'img/armaduras.webp',
+  asgard: 'img/asgard.webp',
+  poseidon: 'img/poseidon.webp',
+  poseidonFull: 'img/poseidon-full.webp',
 };
 Object.entries(IMG).forEach(([k, u]) => document.documentElement.style.setProperty('--img-' + k, `url("${u}")`));
 const SCENES = new Map([[home, 'home'], [chooseHero, 'armaduras'], [housesScreen, 'casas'], [battle, 'batalla'], [trainSetup, 'train'], [train, 'train'],
-  [meteorSetup, 'meteoros'], [meteorGame, 'meteoros'], [memorySetup, 'memoria'], [memoryGame, 'memoria'], [collection, 'armaduras'], [mapScreen, 'home']]);
+  [meteorSetup, 'meteoros'], [meteorGame, 'meteoros'], [memorySetup, 'memoria'], [memoryGame, 'memoria'], [collection, 'armaduras'], [mapScreen, 'home'],
+  [asgardScreen, 'asgard'], [asgardDuel, 'asgard'], [poseidonScreen, 'poseidon'], [pillarGame, 'poseidon']]);
 function setScene(fn) {
   const el = $('#scene');
   el.style.backgroundImage = `url("${IMG[SCENES.get(fn) || 'home']}")`;
