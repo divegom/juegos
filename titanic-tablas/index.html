@@ -127,7 +127,7 @@ img.photo { display: block; width: 100%; height: 100%; object-fit: cover; filter
 .modes > .mode:last-child:nth-child(even) { grid-column: 1 / -1; }
 .mode.big { grid-column: 1 / -1; background: linear-gradient(120deg, #fff 40%, #dff0fa); }
 .mode.big .art > svg { width: 92%; }
-.extras { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.extras { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
 .extra { text-align: left; background: rgba(255,255,255,.65); border: 2px dashed var(--line); border-radius: var(--r); padding: 14px 16px; font-weight: 800; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
 .extra:hover { border-color: var(--sea-2); }
 .extra span { color: var(--muted); font-weight: 700; font-size: .9rem; }
@@ -289,6 +289,20 @@ img.photo { display: block; width: 100%; height: 100%; object-fit: cover; filter
 .map td.m-bad { background: var(--bad-bg); border-color: var(--bad); color: var(--bad); }
 .legend { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; font-size: .85rem; font-weight: 700; color: var(--muted); }
 .legend i { display: inline-block; width: 14px; height: 14px; border-radius: 4px; vertical-align: -2px; margin-right: 4px; border: 2px solid var(--line); }
+
+/* Curiosidades */
+.curio { background: linear-gradient(135deg, #fff8e1, #fdebc0); border: 2px solid var(--gold); border-radius: 16px; padding: 12px 14px; text-align: left; width: 100%; box-shadow: 0 3px 0 #e2b13c; }
+.curio .ct { display: block; font-family: var(--font-display); color: var(--navy); font-size: 1.05rem; margin-bottom: 2px; }
+.curio p { margin: 0; color: var(--ink) !important; font-size: .93rem; }
+.curio.new { animation: shine 1.4s ease 1; }
+@keyframes shine { 0% { transform: scale(.9); opacity: 0; } 40% { transform: scale(1.04); opacity: 1; } 100% { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .curio.new { animation: none; } }
+.curio-badge { display: inline-block; background: var(--red); color: #fff; font-weight: 900; font-size: .75rem; border-radius: 999px; padding: 2px 10px; margin-bottom: 6px; }
+.curio-done { font-weight: 900; color: var(--brass) !important; }
+.chest { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.chest .curio { box-shadow: none; }
+.locks { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 8px; }
+.locks span { background: var(--panel-2); border: 2px dashed var(--line); border-radius: 12px; padding: 8px 4px; text-align: center; color: var(--muted); font-weight: 900; font-size: .85rem; }
 
 /* Modal, efectos */
 .modal { position: fixed; inset: 0; background: rgba(11, 42, 72, .5); display: grid; place-items: center; padding: 16px; z-index: 20; }
@@ -557,6 +571,49 @@ const CHECKS = [
   { id: 'carpathia', hl: 'boats', p: 'El rescate', q: 'Imagina 7 botes salvavidas con 9 personas en cada uno. ¿Cuántas personas son?', a: 7, b: 9, m: 1, f: 'El <b>Carpathia</b> navegó toda la noche y rescató a <b>más de 700 personas</b> de los botes. Su capitán, <b>Arthur Rostron</b>, apagó la calefacción para que todo el vapor fuera a los motores y llegar antes.' },
   { id: 'fondo', hl: 'wreck', p: 'El descubrimiento', q: 'Imagina que un submarino baja 50 metros cada minuto. ¿Cuántos metros baja en 8 minutos? (Truco: 8 × 5 y añade un 0)', a: 8, b: 5, m: 10, f: 'Los restos del Titanic están a unos <b>3.800 metros</b> de profundidad, donde todo está oscuro y muy frío. Se encontraron en <b>1985</b>.' },
 ];
+// Curiosidades reales del Titanic: se desbloquea una al terminar cada partida
+const CURIOS = [
+  { t: 'Los tres hermanos', i: '🚢', f: 'El Titanic tenía dos barcos hermanos: el <b>Olympic</b>, que navegó hasta 1935 y lo apodaron «el viejo fiable», y el <b>Britannic</b>, que fue barco hospital en la Primera Guerra Mundial.' },
+  { t: 'Miss Insumergible', i: '👩‍⚕️', f: '<b>Violet Jessop</b> trabajó en los tres hermanos: estaba en el Olympic cuando chocó con otro barco, sobrevivió al Titanic y también al hundimiento del Britannic en 1916. ¡La llamaron «Miss Insumergible»!' },
+  { t: 'Un nombre de gigantes', i: '🏛️', f: 'El nombre viene de los <b>titanes</b>, unos gigantes de la mitología griega. La compañía quería que todo el mundo supiera que era enorme.' },
+  { t: 'Un barco cartero', i: '✉️', f: 'RMS significa <b>Royal Mail Ship</b>, «barco del correo real». Llevaba unas <b>3.400 sacas de cartas</b> y viajaban a bordo 5 carteros.' },
+  { t: 'Un tobogán de jabón', i: '🧼', f: 'Para la botadura, el 31 de mayo de 1911, untaron la rampa con unas <b>22 toneladas de sebo y jabón</b>. El casco tardó solo unos <b>62 segundos</b> en deslizarse hasta el agua.' },
+  { t: 'Sin botella de champán', i: '🍾', f: 'Al Titanic no lo «bautizaron» rompiendo una botella contra el casco: la compañía White Star Line no tenía esa costumbre.' },
+  { t: '¡Casi choca al salir!', i: '⚓', f: 'Al salir de Southampton, el oleaje del Titanic arrastró a otro barco, el <b>New York</b>, que se soltó de sus amarras. ¡Se quedaron a poco más de <b>1 metro</b> de chocar!' },
+  { t: 'Los prismáticos encerrados', i: '🔑', f: 'Los prismáticos de los vigías estaban guardados en un armario. La llave la tenía un oficial, <b>David Blair</b>, al que cambiaron de barco en el último momento. Esa llave se subastó en 2007.' },
+  { t: 'Un camello eléctrico', i: '🐫', f: 'El gimnasio tenía bicicletas fijas, un remo, un «caballo» mecánico y hasta un <b>camello eléctrico</b> para hacer ejercicio.' },
+  { t: 'Piscina de agua de mar', i: '🏊', f: 'Fue de los primeros barcos con <b>piscina</b>. Se llenaba con <b>agua del mar</b>, calentada, y era para los pasajeros de primera clase.' },
+  { t: 'Cuatro ascensores', i: '🛗', f: 'El Titanic tenía <b>4 ascensores</b>: tres para primera clase y uno para segunda. ¡En 1912 era algo muy moderno!' },
+  { t: 'El reloj de la escalera', i: '🕰️', f: 'En lo alto de la gran escalera había un reloj tallado con dos figuras: <b>el Honor y la Gloria coronando al Tiempo</b>. Encima, una cúpula de cristal dejaba entrar la luz.' },
+  { t: 'Dos bañeras para 700', i: '🛁', f: 'En tercera clase viajaban más de 700 personas y solo había <b>2 bañeras</b> para todas. Aun así, sus camarotes eran mejores que los de muchos otros barcos.' },
+  { t: 'Una cena de diez platos', i: '🍽️', f: 'La noche del 14 de abril, la cena de primera clase tuvo <b>10 platos</b>: ostras, consomé, salmón, cordero, pato… y de postre, pudin y pasteles.' },
+  { t: 'Un billete carísimo', i: '💰', f: 'La suite más cara costaba unas <b>870 libras</b> de 1912. ¡Un marinero tendría que haber trabajado muchísimos años para pagarla!' },
+  { t: 'Silbatos que se oían lejos', i: '📯', f: 'Los silbatos del Titanic eran tan potentes que se oían a unos <b>16 kilómetros</b> de distancia.' },
+  { t: 'Perros a bordo', i: '🐕', f: 'Viajaban unos <b>12 perros</b>, la mayoría de pasajeros de primera clase. Tres de ellos, perritos pequeños, se salvaron en los botes con sus dueños.' },
+  { t: 'Españoles a bordo', i: '🇪🇸', f: 'También viajaban españoles, como <b>Víctor Peñasco</b> y <b>María Josefa Pérez de Soto</b>, una pareja de recién casados que estaba de luna de miel. Ella se salvó en un bote.' },
+  { t: 'Un hospital flotante', i: '🩺', f: 'El barco tenía un pequeño <b>hospital</b> con médicos, enfermería e incluso una sala de operaciones.' },
+  { t: 'Telegramas en alta mar', i: '📻', f: 'Los pasajeros podían enviar <b>telegramas</b> por radio a sus familias. Los telegrafistas <b>Jack Phillips</b> y <b>Harold Bride</b> enviaron cientos durante el viaje.' },
+  { t: 'Un mensaje por casualidad', i: '🛏️', f: 'El telegrafista del Carpathia, <b>Harold Cottam</b>, estaba a punto de irse a dormir cuando escuchó la llamada de socorro del Titanic. ¡Gracias a eso llegó la ayuda!' },
+  { t: 'La orquesta valiente', i: '🎻', f: 'Los <b>8 músicos</b> de la orquesta, dirigidos por <b>Wallace Hartley</b>, siguieron tocando en cubierta para mantener la calma mientras la gente subía a los botes.' },
+  { t: '«Prácticamente insumergible»', i: '📰', f: 'Una revista de barcos escribió que el Titanic era «<b>prácticamente insumergible</b>». Con el tiempo, la gente empezó a decir que era insumergible del todo.' },
+  { t: 'Más de 3.500 chalecos', i: '🦺', f: 'A bordo había más de <b>3.500 chalecos salvavidas</b> y unos 48 aros salvavidas. Lo que faltaban eran botes.' },
+  { t: 'Un bote medio vacío', i: '🛶', f: 'El primer bote que bajaron, el <b>número 7</b>, llevaba solo unas 28 personas aunque cabían 65. Al principio, mucha gente no creía que el barco se fuera a hundir.' },
+  { t: 'Molly, la insumergible', i: '💪', f: '<b>Margaret «Molly» Brown</b> ayudó a remar en el bote número 6 y animó a todos. Luego recogió dinero para ayudar a los supervivientes.' },
+  { t: 'La pasajera más joven', i: '👶', f: '<b>Millvina Dean</b> tenía solo <b>2 meses</b> cuando viajó en el Titanic. Fue la última superviviente y vivió hasta 2009.' },
+  { t: 'Un libro que lo «adivinó»', i: '📖', f: 'En 1898, 14 años antes, el escritor Morgan Robertson publicó una novela sobre un barco enorme llamado <b>Titán</b> que chocaba con un iceberg en abril. ¡Pura casualidad!' },
+  { t: 'El chocolatero que no subió', i: '🍫', f: '<b>Milton Hershey</b>, el famoso fabricante de chocolate, tenía reservado un camarote, pero cambió de planes y viajó antes en otro barco.' },
+  { t: 'Un fuego escondido', i: '🔥', f: 'Desde antes de zarpar, había un pequeño <b>fuego en un depósito de carbón</b>. Los fogoneros estuvieron días apagándolo.' },
+  { t: 'Agua bajo cero', i: '🧊', f: 'Esa noche el agua del mar estaba a unos <b>−2 °C</b>. El agua salada puede estar por debajo de cero sin congelarse.' },
+  { t: 'Dos horas y cuarenta minutos', i: '⏱️', f: 'Desde el choque con el iceberg (23:40) hasta que el barco desapareció (2:20) pasaron <b>2 horas y 40 minutos</b>.' },
+  { t: 'Partido en dos', i: '🧩', f: 'En el fondo del mar el Titanic está <b>partido en dos trozos</b>, separados unos <b>600 metros</b>.' },
+  { t: 'Bacterias comehierro', i: '🦠', f: 'En los restos viven unas bacterias, llamadas <b>Halomonas titanicae</b>, que se «comen» el hierro oxidado. Poco a poco, el barco va desapareciendo.' },
+  { t: 'Zapatos en el fondo', i: '👞', f: 'En el fondo del mar todavía se ven <b>zapatos y maletas</b> de cuero: el cuero aguanta mucho más que otros materiales.' },
+  { t: 'Robots exploradores', i: '🤖', f: 'Un año después de encontrarlo, en 1986, Robert Ballard bajó en el submarino <b>Alvin</b> con un pequeño robot llamado <b>Jason Jr.</b>, que se metió por dentro del barco.' },
+  { t: 'Un director buceador', i: '🎬', f: 'James Cameron, el director de la película <b>Titanic</b> (1997), bajó <b>33 veces</b> hasta los restos. La película ganó <b>11 premios Óscar</b>.' },
+  { t: 'La patrulla del hielo', i: '🧭', f: 'Después del Titanic se creó la <b>Patrulla Internacional del Hielo</b>, que vigila los icebergs del Atlántico. ¡Todavía existe hoy!' },
+  { t: 'Leyes para salvar vidas', i: '📜', f: 'En 1914 muchos países firmaron unas normas de seguridad, el convenio <b>SOLAS</b>: botes para todos, radio encendida día y noche y simulacros de rescate.' },
+  { t: 'Un museo con forma de proa', i: '🏢', f: 'En Belfast, junto al astillero, está el museo <b>Titanic Belfast</b>, abierto en 2012. Su edificio tiene forma de proas de barco y es tan alto como el casco del Titanic.' },
+];
 const SPECS = [
   ['269 m', 'de largo'], ['28 m', 'de ancho'], ['53 m', 'de alto (hasta las chimeneas)'], ['4', 'chimeneas (una falsa)'],
   ['3', 'hélices'], ['20', 'botes salvavidas'], ['~1.300', 'pasajeros'], ['~900', 'personas de tripulación'],
@@ -565,12 +622,13 @@ const SPECS = [
 
 /* ---------- Guardado ---------- */
 const KEY = 'titanic-tablas-v1';
-const DEF = () => ({ name: '', role: null, miles: 0, legs: Array(11).fill(0), medals: {}, facts: {}, notes: {}, sound: true, diff: 1, records: {} });
+const DEF = () => ({ name: '', role: null, miles: 0, legs: Array(11).fill(0), medals: {}, facts: {}, notes: {}, curios: [], sound: true, diff: 1, records: {} });
 let save = DEF();
 try { const raw = localStorage.getItem(KEY); if (raw) save = Object.assign(DEF(), JSON.parse(raw)); } catch (e) {}
 save.legs = Array.from({ length: 11 }, (_, i) => +(Array.isArray(save.legs) && save.legs[i]) || 0);
 ['medals', 'records', 'facts', 'notes'].forEach(k => { if (!save[k] || typeof save[k] !== 'object') save[k] = {}; });
 if (!(save.diff >= 0 && save.diff <= 2)) save.diff = 1;
+if (!Array.isArray(save.curios)) save.curios = [];
 const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(save)); } catch (e) {} };
 
 const factKey = (a, b) => Math.min(a, b) + 'x' + Math.max(a, b);
@@ -729,6 +787,16 @@ function giveMedal(id) {
   return `<div class="big-art">${G[m.g]}</div><p><b>¡Nueva medalla: ${m.n}!</b></p>`;
 }
 
+// Premio de cada partida terminada: una curiosidad nueva del Titanic
+function giveCurio() {
+  const left = CURIOS.map((_, i) => i).filter(i => !save.curios.includes(i));
+  if (!left.length) return `<p class="curio-done">🏆 ¡Tienes todas las curiosidades del Titanic!</p>`;
+  const i = left[rnd(left.length)];
+  save.curios.push(i); persist();
+  const c = CURIOS[i];
+  return `<div class="curio new"><span class="curio-badge">🎁 ¡Nueva curiosidad! ${save.curios.length}/${CURIOS.length}</span><b class="ct"><span aria-hidden="true">${c.i}</span> ${c.t}</b><p>${c.f}</p></div>`;
+}
+
 /* ---------- Modal ---------- */
 let modalKeys = null;
 function showModal(html, actions) {
@@ -817,7 +885,7 @@ function renderHeader() {
 $('#brand').addEventListener('click', () => go(home));
 $('#sound').addEventListener('click', () => { save.sound = !save.sound; persist(); renderHeader(); });
 $('#reset').addEventListener('click', () => {
-  showModal(`<div class="big-art">${ring}</div><h2>¿Borrar todo?</h2><p>Se perderán las millas, las etapas del viaje, el álbum y las medallas.</p>`, [
+  showModal(`<div class="big-art">${ring}</div><h2>¿Borrar todo?</h2><p>Se perderán las millas, las etapas del viaje, el álbum, las medallas y las curiosidades.</p>`, [
     { label: 'Cancelar', primary: true },
     { label: 'Sí, borrar', fn: () => { const s = save.sound; save = DEF(); save.sound = s; persist(); renderHeader(); go(home); } },
   ]);
@@ -837,7 +905,7 @@ function home() {
       <div class="hero-body">
         <div>
           ${role ? `<p class="me-sub" style="margin:0 0 6px">${role.e} Viajas como <b>${role.n}</b> · <button class="link" id="m-role">Cambiar</button></p>` : ''}
-          <p class="lead">Cada operación acertada te hace navegar millas. Recorre el viaje real del Titanic, colecciona fotos y recuerdos, esquiva icebergs y ayuda al Carpathia a rescatar a la gente de los botes.</p>
+          <p class="lead">Cada operación acertada te hace navegar millas, y cada partida terminada te regala una curiosidad del Titanic. Recorre el viaje real del Titanic, colecciona fotos y recuerdos, esquiva icebergs y ayuda al Carpathia a rescatar a la gente de los botes.</p>
           <div style="margin-top:14px"><span class="rank-name">Rango: ${r.n}</span>
             <div class="bar"><i style="width:${pct}%"></i></div>
             <div class="bar-label">${next ? `${save.miles} / ${next.min} millas para ser ${next.n}` : '¡Has llegado al rango más alto!'}</div>
@@ -855,6 +923,7 @@ function home() {
       <button class="mode" id="m-memo"><span class="art">${G.ojobuey}</span><span><h3>Ojos de buey</h3><p>Juego de memoria: une cada operación con su resultado.</p></span></button>
     </div>
     <div class="extras">
+      <button class="extra" id="m-chest">🎁 Cofre de curiosidades <span>${save.curios.length}/${CURIOS.length} →</span></button>
       <button class="extra" id="m-album">Mi álbum del viaje <span>${items}/${LEGS.length + MEDALS.length} →</span></button>
       <button class="extra" id="m-map">Mapa de mis tablas <span>Qué sé y qué me cuesta →</span></button>
     </div>
@@ -866,6 +935,7 @@ function home() {
   $('#m-insp').onclick = () => go(inspSetup);
   $('#m-memo').onclick = () => go(memoSetup);
   $('#m-album').onclick = () => go(album);
+  $('#m-chest').onclick = () => go(chest);
   $('#m-map').onclick = () => go(mapScreen);
   if ($('#m-role')) $('#m-role').onclick = chooseRole;
   if (!save.name) askName();
@@ -958,6 +1028,7 @@ function leg(i) {
       <div class="fact" style="text-align:left">📜 ${e.f}</div>`;
     if (first) html += `<div class="big-art">${G[e.g]}</div><p><b>¡Nuevo recuerdo: ${e.gn}!</b><br>${e.gd}</p>`;
     if (first && all) html += `<p><b>¡Has completado la gran travesía entera!</b></p>`;
+    html += giveCurio();
     showModal(html, [
       { label: 'Repetir', fn: () => go(leg, i) },
       i < 10 ? { label: 'Siguiente etapa', primary: true, fn: () => go(leg, i + 1) } : { label: 'Volver', primary: true, fn: () => go(voyageScreen) },
@@ -1018,7 +1089,7 @@ function train(set) {
     const bonus = good === 10 ? 10 : good >= 8 ? 5 : 2;
     addMiles(bonus); sfx.win();
     showModal(`<div class="big-art">${ring}</div><h2>${good === 10 ? '¡Perfecto!' : good >= 7 ? '¡Muy bien!' : '¡Buen entrenamiento!'}</h2>
-      <p>Has acertado ${good} de 10 a la primera y navegado ${st.earned + bonus} millas.</p>`, [
+      <p>Has acertado ${good} de 10 a la primera y navegado ${st.earned + bonus} millas.</p>${giveCurio()}`, [
       { label: 'Otra tabla', fn: () => go(trainSetup) },
       { label: 'Repetir', primary: true, fn: () => go(train, set) },
     ]);
@@ -1112,7 +1183,7 @@ function iceGame(set) {
     const medal = st.score >= 250 ? giveMedal('ice') : '';
     showModal(`<div class="big-art">${G.prismaticos}</div><h2>${record ? '¡Nuevo récord!' : '¡Fin de la guardia!'}</h2>
       <p>Has esquivado ${st.dodged} icebergs y conseguido <b>${st.score} puntos</b> en velocidad ${sp.n}. Récord: ${Math.max(best, st.score)}.</p><p>Navegas ${earned} millas.</p>
-      <div class="fact" style="text-align:left">📜 Los vigías del Titanic no tenían prismáticos esa noche, y el mar estaba tan en calma que no se veían olas rompiendo contra el hielo. ¡Tú has tenido mejor vista!</div>${medal}`, [
+      <div class="fact" style="text-align:left">📜 Los vigías del Titanic no tenían prismáticos esa noche, y el mar estaba tan en calma que no se veían olas rompiendo contra el hielo. ¡Tú has tenido mejor vista!</div>${medal}${giveCurio()}`, [
       { label: 'Salir', fn: () => go(iceSetup) },
       { label: 'Otra guardia', primary: true, fn: () => go(iceGame, set) },
     ]);
@@ -1194,7 +1265,7 @@ function rescueGame(set) {
     $('#say').textContent = '¡Todos los botes a salvo!';
     later(() => showModal(`<div class="m-photo">${photo('bote', 'Un bote salvavidas del Titanic')}</div><h2>¡Todos los botes a salvo!</h2>${starsHTML(stars)}
       <p>Has llegado a las <b>${clockTxt(t)}</b>${t <= 240 ? ', ¡antes que el Carpathia de verdad!' : '. El Carpathia de verdad llegó hacia las 4:00: ¡inténtalo otra vez para ganarle!'} Has acertado ${st.ok} y navegas ${earned + st.ok} millas.</p>
-      <div class="fact" style="text-align:left">📜 En la realidad, el Carpathia rescató a <b>más de 700 personas</b> de 20 botes y las llevó a Nueva York, donde llegó el 18 de abril.</div>${medal}`, [
+      <div class="fact" style="text-align:left">📜 En la realidad, el Carpathia rescató a <b>más de 700 personas</b> de 20 botes y las llevó a Nueva York, donde llegó el 18 de abril.</div>${medal}${giveCurio()}`, [
       { label: 'Salir', fn: () => go(rescueSetup) },
       { label: 'Otro rescate', primary: true, fn: () => go(rescueGame, set) },
     ]), 600);
@@ -1261,7 +1332,7 @@ function inspGame() {
     const stars = good === 8 ? 3 : good >= 6 ? 2 : 1, bonus = 4 + stars * 3;
     addMiles(bonus); sfx.win();
     const medal = good === 8 ? giveMedal('insp') : '';
-    showModal(`<div class="big-art">${G.lupa}</div><h2>¡Inspección terminada!</h2>${starsHTML(stars)}<p>Has acertado ${good} de 8 y navegas ${st.earned + bonus} millas. Tu cuaderno tiene ${Object.keys(save.notes).length} de ${CHECKS.length} datos.</p>${medal}`, [
+    showModal(`<div class="big-art">${G.lupa}</div><h2>¡Inspección terminada!</h2>${starsHTML(stars)}<p>Has acertado ${good} de 8 y navegas ${st.earned + bonus} millas. Tu cuaderno tiene ${Object.keys(save.notes).length} de ${CHECKS.length} datos.</p>${medal}${giveCurio()}`, [
       { label: 'Salir', fn: () => go(inspSetup) },
       { label: 'Otra inspección', primary: true, fn: () => go(inspGame) },
     ]);
@@ -1306,11 +1377,20 @@ function memoGame(set) {
     const bonus = 5 + stars * 3;
     addMiles(bonus); sfx.win();
     const medal = st.tries <= 10 ? giveMedal('memo') : '';
-    showModal(`<div class="big-art">${G.ojobuey}</div><h2>¡Todas las ventanas abiertas!</h2>${starsHTML(stars)}<p>Lo has conseguido en ${st.tries} intentos. Navegas ${bonus + 12} millas.</p>${medal}`, [
+    showModal(`<div class="big-art">${G.ojobuey}</div><h2>¡Todas las ventanas abiertas!</h2>${starsHTML(stars)}<p>Lo has conseguido en ${st.tries} intentos. Navegas ${bonus + 12} millas.</p>${medal}${giveCurio()}`, [
       { label: 'Otra tabla', fn: () => go(memoSetup) },
       { label: 'Repetir', primary: true, fn: () => go(memoGame, set) },
     ]);
   }
+}
+
+/* ---------- Cofre de curiosidades ---------- */
+function chest() {
+  const n = save.curios.length;
+  screen(`<div><p class="eyebrow">Cofre de curiosidades</p><h2>Secretos del Titanic</h2><p class="lead">Cada vez que terminas una partida de cualquier juego, el cofre se abre y te regala una curiosidad real del Titanic. Tienes ${n} de ${CURIOS.length}.</p>
+      <div class="bar" style="max-width:420px"><i style="width:${Math.round(n / CURIOS.length * 100)}%"></i></div></div>
+    ${n ? `<div class="chest">${save.curios.map(i => CURIOS[i]).map(c => `<div class="curio"><b class="ct"><span aria-hidden="true">${c.i}</span> ${c.t}</b><p>${c.f}</p></div>`).join('')}</div>` : '<p class="lead">El cofre está vacío. ¡Termina tu primera partida para abrirlo!</p>'}
+    ${n < CURIOS.length ? `<h3>Por descubrir: ${CURIOS.length - n}</h3><div class="locks">${CURIOS.map((_, i) => i).filter(i => !save.curios.includes(i)).map(i => `<span>🔒 ${i + 1}</span>`).join('')}</div>` : '<p class="curio-done">🏆 ¡Has descubierto todas las curiosidades del Titanic!</p>'}`);
 }
 
 /* ---------- Álbum y mapa ---------- */
